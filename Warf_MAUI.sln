@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35424.110 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warf_MAUI", "Warf_MAUI\Warf_MAUI\Warf_MAUI.csproj", "{6708EDA7-E7CC-460D-AAA8-190BA4FEEEF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warf_MAUI.Shared", "Warf_MAUI\Warf_MAUI.Shared\Warf_MAUI.Shared.csproj", "{9DC94EED-ED5C-46C1-B295-D81C933C3060}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warf_MAUI.Web", "Warf_MAUI\Warf_MAUI.Web\Warf_MAUI.Web.csproj", "{EB22E588-6F67-4993-925E-ECEA1B78B075}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warf_MAUI.Web.Client", "Warf_MAUI\Warf_MAUI.Web.Client\Warf_MAUI.Web.Client.csproj", "{12859205-9C99-4EC6-9897-A97DC2C77467}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6708EDA7-E7CC-460D-AAA8-190BA4FEEEF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6708EDA7-E7CC-460D-AAA8-190BA4FEEEF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6708EDA7-E7CC-460D-AAA8-190BA4FEEEF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6708EDA7-E7CC-460D-AAA8-190BA4FEEEF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DC94EED-ED5C-46C1-B295-D81C933C3060}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DC94EED-ED5C-46C1-B295-D81C933C3060}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DC94EED-ED5C-46C1-B295-D81C933C3060}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DC94EED-ED5C-46C1-B295-D81C933C3060}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB22E588-6F67-4993-925E-ECEA1B78B075}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB22E588-6F67-4993-925E-ECEA1B78B075}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB22E588-6F67-4993-925E-ECEA1B78B075}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB22E588-6F67-4993-925E-ECEA1B78B075}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12859205-9C99-4EC6-9897-A97DC2C77467}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12859205-9C99-4EC6-9897-A97DC2C77467}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12859205-9C99-4EC6-9897-A97DC2C77467}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12859205-9C99-4EC6-9897-A97DC2C77467}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
