@@ -1,6 +1,6 @@
 /*#region DEMO*/
 /* TODO: REPLACE WITH UIKIT THEMES */
-body, pre {
+/*body, pre {
     background: #0d0e1d !important;
     color: #8da4c1 !important;
 }
@@ -20,9 +20,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, #060710 0%, #0a0b17 70%) !important;
+    background-image: linear-gradient(180deg, #060710 0%, #0a0b17 70%) !important;*/
     /*background-color: #060710 !important;*/
-}
+/*}*/
 /*#endregion DEMO*/
 
 html, body {
