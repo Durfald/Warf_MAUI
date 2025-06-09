@@ -6,61 +6,72 @@
         - .uk-flex-stretch@l Only affects device widths of 1200px and higher.
 *@
 
-<nav class="uk-flex uk-flex-column uk-flex-between uk-height-1-1">
+<nav class="uk-flex uk-flex-column uk-flex-space-between uk-height-1-1">
 
     @* первый div блок - всегда вверху. Расширяется вниз *@
 
-    <div class="uk-flex uk-flex-column uk-align-center uk-flex-top uk-width-1-1">
-        <NavLink class="uk-link-reset wa-main-navigation-title"
-                 href="/"
-                 Match="NavLinkMatch.All">
-            Warframe Market
-            <div class="wa-interactive-underline"></div>
-        </NavLink>
+    <ul class="uk-nav uk-width-1-1">
+        <li class="uk-active">
+            <NavLink class="wa-main-navigation-title"
+                     href="/"
+                     Match="NavLinkMatch.All">
+                Warframe Market
+                <div class="wa-interactive-underline"></div>
+            </NavLink>
 
-        <NavLink class="uk-link-reset wa-main-navigation-button"
-                 href="/Items/FetchItems"
-                 Match="NavLinkMatch.All">
-            <i class="fa-solid fa-download uk-icon"></i> Загрузить
-            <div class="wa-interactive-underline"></div>
-        </NavLink>
-
-        <NavLink class="uk-link-reset wa-main-navigation-button"
-                 href="/Items/ItemsList"
-                 Match="NavLinkMatch.All">
-            <i class="fa-solid fa-cubes-stacked uk-icon"></i> Предметы
-            <div class="wa-interactive-underline"></div>
-        </NavLink>
+        </li>
+        <li>
+            <NavLink class="wa-main-navigation-button"
+                     href="/Items/FetchItems"
+                     Match="NavLinkMatch.All">
+                <i class="uk-icon-download"></i> Загрузить
+                <div class="wa-interactive-underline"></div>
+            </NavLink>
+        </li>
+        <li>
+            <NavLink class="wa-main-navigation-button"
+                     href="/Items/ItemsList"
+                     Match="NavLinkMatch.All">
+                <i class="fa-solid fa-cubes-stacked uk-icon"></i> Предметы
+                <div class="wa-interactive-underline"></div>
+            </NavLink>
+        </li>
         @* 
             TODO:
             Я не уверен на счёт MarketMain, потому как не ебу как оно должно
             называться. Сам, короче, обзовёшь эту поеботу. Только без
             MarkePage(мене похуй как назвать).razor
         *@
-        <NavLink class="uk-link-reset wa-main-navigation-button"
-                 href="/Market/MarketMain"
-                 Match="NavLinkMatch.All">
-            <i class="fa-solid fa-cart-shopping uk-icon"></i> Магазин
-            <div class="wa-interactive-underline"></div>
-        </NavLink>
-        <NavLink class="uk-link-reset wa-main-navigation-button" 
-                 href="/Market/MarketDucanator"
-                 Match="NavLinkMatch.All">
-           <img src="_content/Warf_MAUI.Shared/svg/ducat.svg" class="uk-icon" style="width:40px; height:40px"/> Дуканатор
-            <div class="wa-interactive-underline"></div>
-        </NavLink>
-    </div>
+        <li>
+            <NavLink class="wa-main-navigation-button"
+                     href="/Market/MarketMain"
+                     Match="NavLinkMatch.All">
+                <i class="uk-icon-shopping-cart"></i> Магазин
+                <div class="wa-interactive-underline"></div>
+            </NavLink>
+        </li>
+        <li>
+            <NavLink class="wa-main-navigation-button"
+                     href="/Market/MarketDucanator"
+                     Match="NavLinkMatch.All">
+                <img src="_content/Warf_MAUI.Shared/svg/ducat_light.svg" />
+                Дуканатор
+                <div class="wa-interactive-underline"></div>
+            </NavLink>
+        </li>
+    </ul>
 
     @* второй div блок - всегда внизу. Расширятется наверх. *@
-
-    <div class="uk-flex uk-flex-column uk-align-center uk-flex-top uk-width-1-1">
-        <NavLink class="uk-link-reset wa-main-navigation-button"
-                 href="/Configuration/Settings"
-                 Match="NavLinkMatch.All">
-            <i class="fa-solid fa-gears uk-icon"></i> Настройки
-            <div class="wa-interactive-underline"></div>
-        </NavLink>
-    </div>
+    <ul class="uk-nav uk-width-1-1" style="padding-bottom: 0.5em;">
+        <li>
+            <NavLink class="wa-main-navigation-button"
+                     href="/Configuration/Settings"
+                     Match="NavLinkMatch.All">
+                <i class="uk-icon-gears"></i> Настройки
+                <div class="wa-interactive-underline"></div>
+            </NavLink>
+        </li>
+    </ul>
 
     <script type="text/javascript" src="_content/Warf_MAUI.Shared/scripts/javascript/decorations/navigation-button-dynamic-underline.js" defer></script>
 </nav>
