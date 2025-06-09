@@ -10,7 +10,7 @@
 
     @* первый div блок - всегда вверху. Расширяется вниз *@
 
-    <div class="uk-flex uk-flex-column uk-align-center uk-flex-top">
+    <div class="uk-flex uk-flex-column uk-align-center uk-flex-top uk-width-1-1">
         <NavLink class="uk-link-reset wa-main-navigation-title"
                  href="/"
                  Match="NavLinkMatch.All">
@@ -47,7 +47,7 @@
 
     @* второй div блок - всегда внизу. Расширятется наверх. *@
 
-    <div class="uk-flex uk-flex-column uk-align-center uk-flex-top">
+    <div class="uk-flex uk-flex-column uk-align-center uk-flex-top uk-width-1-1">
         <NavLink class="uk-link-reset wa-main-navigation-button"
                  href="/Configuration/Settings"
                  Match="NavLinkMatch.All">
@@ -55,5 +55,6 @@
             <div class="wa-interactive-underline"></div>
         </NavLink>
     </div>
+
     <script type="text/javascript" src="_content/Warf_MAUI.Shared/scripts/javascript/decorations/navigation-button-dynamic-underline.js" defer></script>
 </nav>

@@ -1,38 +1,57 @@
 ﻿const decorationClassName = 'wa-interactive-underline';
+interface INavigationButtonDecoration {
+    initialWidth: number,
+    decorationElement: HTMLElement,
+    decorationParent: HTMLElement
+};
+var navigationButtonDecorations: Array<INavigationButtonDecoration> = [];
 
 const navigationItem = document
     .getElementsByTagName('nav').item(0);
-console.log(navigationItem);
 
 if (navigationItem) {
-    var decoration_underline: HTMLCollectionOf<HTMLDivElement> | null =
-        navigationItem.getElementsByClassName(decorationClassName) as HTMLCollectionOf<HTMLDivElement>;
-    console.log(decoration_underline);
+    var decoration_underline: HTMLCollectionOf<HTMLDivElement> | null = navigationItem
+        .getElementsByClassName(decorationClassName) as HTMLCollectionOf<HTMLDivElement>;
     if (decoration_underline == null || decoration_underline == undefined)
         throw new Error(`Cannot find elments with class '${decorationClassName}'`);
 
     for (var index = 0; index < decoration_underline.length; index++) {
+        // полоска
         let decorationElement = decoration_underline[index] as HTMLDivElement;
         if (!decorationElement)
             throw new Error("decorationElement was null in navigation decoration" +
                 "underline elements list.");
 
+        // <a>, к которому биндится выдвижение полоски
         let decorationParent = decoration_underline[index].parentElement as HTMLElement;
         if (!decorationParent)
             throw new Error("decorationParent was null for decoration underline element.");
 
-        decorationParent.addEventListener('mouseover',
-            function (ev) { ShowDecoration(decorationElement, ev, this) });
+        // контейнер, чтобы зафиксировать длину кнопки
+        let buttonDecoration: INavigationButtonDecoration = {
+            initialWidth: decorationParent.clientWidth,
+            decorationElement: decorationElement,
+            decorationParent: decorationParent
+        };
+        // складирую, чтобы не диспозились
+        navigationButtonDecorations.push(buttonDecoration);
 
-        decorationParent.addEventListener('mouseleave',
-            function (ev) { HideDecoration(decorationElement, ev, this) });
+        buttonDecoration.decorationParent.addEventListener('mouseover', function (ev) {
+            ShowDecoration(ev, navigationButtonDecorations[
+                navigationButtonDecorations.indexOf(buttonDecoration)])
+        });
+
+        buttonDecoration.decorationParent.addEventListener('mouseleave', function (ev) {
+            HideDecoration(ev, navigationButtonDecorations[
+                navigationButtonDecorations.indexOf(buttonDecoration)])
+        });
     }
 }
 
-function ShowDecoration(decorationElement: HTMLElement, ev: MouseEvent, linkElement: HTMLElement) {
-    decorationElement.style.width = `${linkElement.clientWidth}px`;
+function ShowDecoration(ev: MouseEvent, buttonDecoration: INavigationButtonDecoration) {
+    buttonDecoration.decorationElement.style.width = `${buttonDecoration.initialWidth}px`;
 }
 
-function HideDecoration(decorationElement: HTMLElement, ev: MouseEvent, linkElement: HTMLElement) {
-    decorationElement.style.width = `0px`;
+function HideDecoration(ev: MouseEvent, buttonDecoration: INavigationButtonDecoration) {
+    buttonDecoration.decorationElement.style.width = `0px`;
 }
