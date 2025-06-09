@@ -1,9 +1,35 @@
+/*#region DEMO*/
+/* TODO: REPLACE WITH UIKIT THEMES */
+body, pre {
+    background: #0d0e1d !important;
+    color: #8da4c1 !important;
+}
+
+pre {
+    border: 1px solid #4b4b4b !important;
+    color: #7689e5 !important;
+}
+
+code {
+    background: #0d0e1d !important;
+    color: #a13232 !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #8ab7e6 !important;
+}
+
+.sidebar {
+    background-image: linear-gradient(180deg, #060710 0%, #0a0b17 70%) !important;
+    /*background-color: #060710 !important;*/
+}
+/*#endregion DEMO*/
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 a, .btn-link {
-    color: #006bb7;
 }
 
 .btn-primary {
@@ -13,7 +39,7 @@ a, .btn-link {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {

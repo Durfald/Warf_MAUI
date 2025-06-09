@@ -1,0 +1,29 @@
+.wa-main-navigation-button {
+    padding: .7em;
+    width: auto;
+
+    i {
+        min-width: 1.5em;
+        width: 1.5em;
+    }
+
+    .wa-interactive-underline {
+        background-color: #0094ff;
+        border-radius: 3px;
+        position: relative;
+        transition: .3s;
+        height: 3px;
+        width: 0px;
+        margin: 0 auto;
+        margin-top: 3px;
+        
+    }
+}
+
+
+.wa-main-navigation-title {
+    width: 100%;
+    text-align: center;
+    padding: 1em 0;
+    font-weight: 700;
+}

@@ -1,6 +1,11 @@
-﻿<Router AppAssembly="typeof(Layout.MainLayout).Assembly">
+﻿@inject NavigationManager navManager
+
+<Router AppAssembly="typeof(Layout.MainLayout).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
+    <NotFound>
+        <p>Элемент не найден. Пытался найти : @navManager.Uri</p>
+    </NotFound>
 </Router>

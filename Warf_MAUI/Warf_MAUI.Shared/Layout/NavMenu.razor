@@ -1,30 +1,59 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Warf_MAUI</a>
+﻿@* 
+    TODO:
+    Этот UI пригоден только для PC. В uk есть условия, которыми можно адаптировать, 
+    но я не буду этим сейчас заниматься. 
+    Например, https://getuikit.com/docs/flex 
+        - .uk-flex-stretch@l Only affects device widths of 1200px and higher.
+*@
+
+<nav class="uk-flex uk-flex-column uk-flex-between uk-height-1-1">
+
+    @* первый div блок - всегда вверху. Расширяется вниз *@
+
+    <div class="uk-flex uk-flex-column uk-align-center uk-flex-top">
+        <NavLink class="uk-link-reset wa-main-navigation-title"
+                 href="/"
+                 Match="NavLinkMatch.All">
+            Warframe Market
+            <div class="wa-interactive-underline"></div>
+        </NavLink>
+
+        <NavLink class="uk-link-reset wa-main-navigation-button"
+                 href="/Items/FetchItems"
+                 Match="NavLinkMatch.All">
+            <i class="fa-solid fa-download uk-icon"></i> Загрузить
+            <div class="wa-interactive-underline"></div>
+        </NavLink>
+
+        <NavLink class="uk-link-reset wa-main-navigation-button"
+                 href="/Items/ItemsList"
+                 Match="NavLinkMatch.All">
+            <i class="fa-solid fa-cubes-stacked uk-icon"></i> Предметы
+            <div class="wa-interactive-underline"></div>
+        </NavLink>
+        @* 
+            TODO:
+            Я не уверен на счёт MarketMain, потому как не ебу как оно должно
+            называться. Сам, короче, обзовёшь эту поеботу. Только без
+            MarkePage(мене похуй как назвать).razor
+        *@
+        <NavLink class="uk-link-reset wa-main-navigation-button"
+                 href="/Market/MarketMain"
+                 Match="NavLinkMatch.All">
+            <i class="fa-solid fa-cart-shopping uk-icon"></i> Магазин
+            <div class="wa-interactive-underline"></div>
+        </NavLink>
     </div>
-</div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+    @* второй div блок - всегда внизу. Расширятется наверх. *@
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span uk-icon="icon: plus-circle" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <i class="fa-solid fa-shop"></i> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
-
+    <div class="uk-flex uk-flex-column uk-align-center uk-flex-top">
+        <NavLink class="uk-link-reset wa-main-navigation-button"
+                 href="/Configuration/Settings"
+                 Match="NavLinkMatch.All">
+            <i class="fa-solid fa-gears uk-icon"></i> Настройки
+            <div class="wa-interactive-underline"></div>
+        </NavLink>
+    </div>
+    <script type="text/javascript" src="_content/Warf_MAUI.Shared/scripts/javascript/decorations/navigation-button-dynamic-underline.js" defer></script>
+</nav>

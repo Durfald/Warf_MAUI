@@ -1,0 +1,25 @@
+﻿@page "/"
+<h3>MainPage</h3>
+<p>Маршруты Blazor всегда сначала попадают на главную страницу, размеченную <code>@@page "/"</code>.</p>
+<p>Внизу с неё можно сделать редирект :</p>
+<code>
+    <pre>
+    @@inject NavigationManager navManager
+    @@code {
+        protected override void OnInitialized()
+        {
+            navManager.NavigateTo("/Market/MarketMain");
+        }
+    }
+    </pre>
+</code>
+
+@* 
+@inject NavigationManager navManager
+@code {
+    protected override void OnInitialized()
+    {
+        navManager.NavigateTo("/Market/MarketMain");
+    }
+}
+*@
