@@ -45,6 +45,12 @@ if (navigationItem) {
             HideDecoration(ev, navigationButtonDecorations[
                 navigationButtonDecorations.indexOf(buttonDecoration)])
         });
+
+        buttonDecoration.decorationParent.addEventListener('click',
+            function (ev: MouseEvent) {
+                navigationButtonDecorations.forEach(x => HideDecoration(ev, x, true))
+                ShowDecoration(ev, buttonDecoration);
+            });
     }
 }
 
@@ -52,6 +58,10 @@ function ShowDecoration(ev: MouseEvent, buttonDecoration: INavigationButtonDecor
     buttonDecoration.decorationElement.style.width = `${buttonDecoration.initialWidth}px`;
 }
 
-function HideDecoration(ev: MouseEvent, buttonDecoration: INavigationButtonDecoration) {
-    buttonDecoration.decorationElement.style.width = `0px`;
+function HideDecoration(
+    ev: MouseEvent,
+    buttonDecoration: INavigationButtonDecoration,
+    forced: boolean = false) {
+    if (!buttonDecoration.decorationParent.classList.contains('active') || forced)
+        buttonDecoration.decorationElement.style.width = `0px`;
 }

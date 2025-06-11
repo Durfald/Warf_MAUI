@@ -6,8 +6,7 @@
     i, img {
         min-width: 1.5em;
         width: 1.5em;
-        height:1.5em;
-
+        height: 1.5em;
     }
 
     .wa-interactive-underline {
@@ -19,8 +18,11 @@
         width: 0px;
         margin: 0 auto;
         margin-top: 3px;
-        
     }
+}
+
+.wa-main-navigation-button.active > div.wa-interactive-underline {
+    width: 100%;
 }
 
 .wa-main-navigation-title {
@@ -28,9 +30,21 @@
     text-align: center;
     margin: 0.4em 0 1em 0;
     font-weight: 500;
-    font-size:24px;
+    font-size: 24px;
 }
 
-pre{
+pre {
     color: #6c99b9;
 }
+
+
+/*TODO: .*/
+/*#region REMOVE_ME_LATER*/
+.uk-nav a {
+    transition: .3s;
+}
+
+.uk-nav .active {
+    opacity: .3;
+}
+/*#endregion REMOVE_ME_LATER*/
