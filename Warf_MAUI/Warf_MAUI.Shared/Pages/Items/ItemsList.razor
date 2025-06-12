@@ -1,6 +1,53 @@
 ﻿@page "/Items/ItemsList"
-<h3>Предметы</h3>
+<div class="uk-panel-box full-space border-radius">
+    <ul class="uk-grid-small uk-grid-match uk-child-width-expand" uk-grid>
+        @* <li>
+            <div class="uk-card uk-card-default uk-card-body">Item 1</div>
+        </li>
+        <li>
+            <div class="uk-card uk-card-default uk-card-body">Item 2</div>
+        </li>
+        <li>
+            <div class="uk-card uk-card-default uk-card-body">Item 3</div>
+        </li>
+        <li>
+            <div class="uk-card uk-card-default uk-card-body">Item 4</div>
+        </li>
+        <li>
+            <div class="uk-card uk-card-default uk-card-body">Item 5</div>
+        </li>
+        <li>
+            <div class="uk-card uk-card-default uk-card-body">Item 6</div>
+        </li>
+        <li>
+            <div class="uk-card uk-card-default uk-card-body">Item 7</div>
+        </li>
+        <li>
+            <div class="uk-card uk-card-default uk-card-body">Item 8</div>
+        </li> *@
 
+        @for(int i = 0; i < 50; i++)
+        {
+            Random r = new();
+            int BuyValue = r.Next(1, 1000);
+            int SellValue = r.Next(1, 1000);
+            int Profit = SellValue - BuyValue;
+            <li>
+                <div class="uk-card-small uk-card-body">
+                    <h3 class="uk-card-title uk-text-center">Item @i</h3>
+                    <p class="uk-text-normal">Цена покупки: @BuyValue</p>
+                    <p class="uk-text-normal">Цена продажи: @SellValue</p>
+                    <p class="uk-text-normal">Разница: @Profit</p>
+                    <p class="uk-text-normal">Ранг: @r.Next(0, 10)</p>
+                    <p class="uk-text-normal">Налог на торговлю: @r.Next(1, 100_000_000))</p>
+                        <p class="uk-text-normal">тренд цены:</p>
+                    <p class="uk-margin-left">90 дней:</p>
+                    <p class="uk-margin-left">2 дня:</p>
+                </div>
+            </li>
+        }
+    </ul>
+ </div>
 @code {
 
 }
