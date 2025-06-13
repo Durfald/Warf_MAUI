@@ -1,265 +1,38 @@
-.uk-custom-card {
+.uk-flex-between{
+    justify-content: space-between;
+}
+
+.uk-inline {
+    display: inline-block;
     position: relative;
-    box-sizing: border-box;
-    transition: box-shadow 0.1s ease-in-out;
-}
-/* Sections
- ========================================================================== */
-.uk-custom-card-body {
-    display: flow-root;
-    padding: 30px 30px;
+    max-width: 100%;
+    vertical-align: middle;
+    -webkit-backface-visibility: hidden;
 }
 
-.uk-custom-card-header {
-    display: flow-root;
-    padding: 15px 30px;
-}
-
-.uk-custom-card-footer {
-    display: flow-root;
-    padding: 15px 30px;
-}
-/* Desktop and bigger */
-@media (min-width: 1200px) {
-    .uk-custom-card-body {
-        padding: 40px 40px;
-    }
-
-    .uk-custom-card-header {
-        padding: 20px 40px;
-    }
-
-    .uk-custom-card-footer {
-        padding: 20px 40px;
-    }
-}
-/*
- * Remove margin from the last-child
- */
-.uk-custom-card-body > :last-child,
-.uk-custom-card-header > :last-child,
-.uk-custom-card-footer > :last-child {
-    margin-bottom: 0;
-}
-/* Media
- ========================================================================== */
-/*
- * Reserved alignment modifier to style the media element, e.g. with `border-radius`
- * Implemented by the theme
- */
-/* Title
- ========================================================================== */
-.uk-custom-card-title {
-    font-size: 1.5rem;
-    line-height: 1.4;
-}
-/* Badge
- ========================================================================== */
-/*
- * 1. Position
- * 2. Size
- * 3. Style
- * 4. Center child vertically
- */
-.uk-custom-card-badge {
-    /* 1 */
+.uk-drop {
+    display: none;
     position: absolute;
-    top: 15px;
-    right: 15px;
-    z-index: 1;
-    /* 2 */
-    height: 22px;
-    padding: 0 10px;
-    /* 3 */
-    background: #1e87f0;
-    color: #fff;
-    font-size: 0.875rem;
-    /* 4 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    line-height: 0;
-    border-radius: 2px;
-    text-transform: uppercase;
-}
-    /*
- * Remove margin from adjacent element
- */
-    .uk-custom-card-badge:first-child + * {
-        margin-top: 0;
-    }
-/* Hover modifier
- ========================================================================== */
-.uk-custom-card-hover:not(.uk-custom-card-default):not(.uk-custom-card-primary):not(.uk-custom-card-secondary):hover {
-    background-color: #fff;
-    box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
-}
-/* Style modifiers
- ========================================================================== */
-/*
- * Default
- * Note: Header and Footer are only implemented for the default style
- */
-.uk-custom-card-default {
-    --uk-custom-inverse: dark;
-    background-color: #fff;
-    color: #666;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    z-index: 1020;
+    --uk-position-offset: 20px;
+    --uk-position-viewport-offset: 15px;
+    box-sizing: border-box;
+    width: 300px
 }
 
-    .uk-custom-card-default .uk-custom-card-title {
-        color: #333;
+    .uk-drop.uk-open {
+        display: block
     }
 
-    .uk-custom-card-default.uk-custom-card-hover:hover {
-        background-color: #fff;
-        box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
-    }
-
-    .uk-custom-card-default .uk-custom-card-header {
-        border-bottom: 1px solid #e5e5e5;
-    }
-
-    .uk-custom-card-default .uk-custom-card-footer {
-        border-top: 1px solid #e5e5e5;
-    }
-/*
- * Primary
- */
-.uk-custom-card-primary {
-    --uk-custom-inverse: light;
-    background-color: #1e87f0;
-    color: #fff;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+.uk-drop-stack .uk-drop-grid > * {
+    width: 100% !important
 }
 
-    .uk-custom-card-primary .uk-custom-card-title {
-        color: #fff;
-    }
-
-    .uk-custom-card-primary.uk-custom-card-hover:hover {
-        background-color: #1e87f0;
-        box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
-    }
-/*
- * Secondary
- */
-.uk-custom-card-secondary {
-    --uk-custom-inverse: light;
-    background-color: #222;
-    color: #fff;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+.uk-drop-parent-icon {
+    margin-right: .25em;
+    transition: transform .3s ease-out
 }
 
-    .uk-custom-card-secondary .uk-custom-card-title {
-        color: #fff;
-    }
-
-    .uk-custom-card-secondary.uk-custom-card-hover:hover {
-        background-color: #222;
-        box-shadow: 0 14px 25px rgba(0, 0, 0, 0.16);
-    }
-/* Size modifier
- ========================================================================== */
-/*
- * Small
- */
-.uk-custom-card-small.uk-custom-card-body,
-.uk-custom-card-small .uk-custom-card-body {
-    padding: 20px 20px;
+[aria-expanded=true] > .uk-drop-parent-icon {
+    transform: rotateX(180deg)
 }
-
-.uk-custom-card-small .uk-custom-card-header {
-    padding: 13px 20px;
-}
-
-.uk-custom-card-small .uk-custom-card-footer {
-    padding: 13px 20px;
-}
-/*
- * Large
- */
-/* Desktop and bigger */
-@media (min-width: 1200px) {
-    .uk-custom-card-large.uk-custom-card-body,
-    .uk-custom-card-large .uk-custom-card-body {
-        padding: 70px 70px;
-    }
-
-    .uk-custom-card-large .uk-custom-card-header {
-        padding: 35px 70px;
-    }
-
-    .uk-custom-card-large .uk-custom-card-footer {
-        padding: 35px 70px;
-    }
-}
-/*
-     * Default
-     */
-.uk-custom-card-body > .uk-custom-nav-default {
-    margin-left: -30px;
-    margin-right: -30px;
-}
-
-    .uk-custom-card-body > .uk-custom-nav-default:only-child {
-        margin-top: -15px;
-        margin-bottom: -15px;
-    }
-
-    .uk-custom-card-body > .uk-custom-nav-default > li > a,
-    .uk-custom-card-body > .uk-custom-nav-default .uk-custom-nav-header,
-    .uk-custom-card-body > .uk-custom-nav-default .uk-custom-nav-divider {
-        padding-left: 30px;
-        padding-right: 30px;
-    }
-
-    .uk-custom-card-body > .uk-custom-nav-default .uk-custom-nav-sub {
-        padding-left: 45px;
-    }
-/* Desktop and bigger */
-@media (min-width: 1200px) {
-    .uk-custom-card-body > .uk-custom-nav-default {
-        margin-left: -40px;
-        margin-right: -40px;
-    }
-
-        .uk-custom-card-body > .uk-custom-nav-default:only-child {
-            margin-top: -25px;
-            margin-bottom: -25px;
-        }
-
-        .uk-custom-card-body > .uk-custom-nav-default > li > a,
-        .uk-custom-card-body > .uk-custom-nav-default .uk-custom-nav-header,
-        .uk-custom-card-body > .uk-custom-nav-default .uk-custom-nav-divider {
-            padding-left: 40px;
-            padding-right: 40px;
-        }
-
-        .uk-custom-card-body > .uk-custom-nav-default .uk-custom-nav-sub {
-            padding-left: 55px;
-        }
-}
-/*
-     * Small
-     */
-.uk-custom-card-small > .uk-custom-nav-default {
-    margin-left: -20px;
-    margin-right: -20px;
-}
-
-    .uk-custom-card-small > .uk-custom-nav-default:only-child {
-        margin-top: -5px;
-        margin-bottom: -5px;
-    }
-
-    .uk-custom-card-small > .uk-custom-nav-default > li > a,
-    .uk-custom-card-small > .uk-custom-nav-default .uk-custom-nav-header,
-    .uk-custom-card-small > .uk-custom-nav-default .uk-custom-nav-divider {
-        padding-left: 20px;
-        padding-right: 20px;
-    }
-
-    .uk-custom-card-small > .uk-custom-nav-default .uk-custom-nav-sub {
-        padding-left: 35px;
-    }
