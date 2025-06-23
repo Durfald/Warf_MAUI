@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\scripts\javascript\" />
+    <Folder Include="wwwroot\styles\css\" />
   </ItemGroup>
 
 </Project>

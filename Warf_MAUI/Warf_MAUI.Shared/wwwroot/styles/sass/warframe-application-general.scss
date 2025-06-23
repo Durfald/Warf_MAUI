@@ -37,14 +37,42 @@ pre {
     color: #6c99b9;
 }
 
+.wa-search-body {
+    padding: 1rem;
 
-/*TODO: .*/
-/*#region REMOVE_ME_LATER*/
-.uk-nav a {
-    transition: .3s;
+    > p{
+        font-size: 24px;
+        text-align:center;
+    }
+
+    > div {
+        display: grid;
+        grid-template-columns: auto;
+        grid-auto-rows: auto;
+        padding-bottom: 2em;
+
+        > input {
+            background: #242c42;
+            color: white;
+            border: 0px;
+            padding: .3rem;
+            font-size: 14px;
+            border-radius: 7px;
+        }
+
+        > select {
+            background: #242c42;
+            color: white;
+            border: 0px;
+            padding: .3rem;
+
+            > option {
+                padding: .3rem;
+            }
+        }
+    }
 }
 
-.uk-nav .active {
-    opacity: .3;
+.wa-search-body-decorations {
+    box-shadow: 1em 1em 3em #000;
 }
-/*#endregion REMOVE_ME_LATER*/

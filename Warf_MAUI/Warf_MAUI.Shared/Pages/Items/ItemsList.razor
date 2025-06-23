@@ -1,6 +1,9 @@
 ﻿@page "/Items/ItemsList"
 @using Warf_MAUI.Shared.Common.BM25
 @using Warf_MAUI.Shared.Common.Mock
+@using Warf_MAUI.Shared.Common.Filters
+@using Warf_MAUI.Shared.Components.Elements
+
 <div>
     <div class="uk-margin uk-flex uk-flex-between uk-flex-wrap">
         <div>
@@ -13,7 +16,58 @@
 
             <div class="uk-inline">
                 <button class="uk-button uk-button-primary border-radius" type="button"><i class="fa-solid fa-filter"></i></button>
-                <div class="uk-panel-box-primary" uk-drop><div class="background"></div></div>
+                <div class="uk-dropbar uk-dropbar-top uk-panel-box-primary wa-search-body-decorations" uk-drop>
+                    <div class="background uk-display-block wa-search-body">
+                        <p class="uk-card-title">Фильтры</p>
+                        <div>
+                            <Label For="() => _itemFilter.BuyValueStart" />
+                            <input type="number" min="0" step="1" @bind="_itemFilter.BuyValueStart" />
+                            <Label For="() => _itemFilter.BuyValueEnd" />
+                            <input type="number" @bind="_itemFilter.BuyValueEnd" />
+                        </div>
+
+                        <div>
+                            <Label For="() => _itemFilter.SellValueStart" />
+                            <input type="number" min="0" step="1" @bind="_itemFilter.SellValueStart" />
+                            <Label For="() => _itemFilter.SellValueEnd" />
+                            <input type="number" @bind="_itemFilter.SellValueEnd" />
+                        </div>
+
+                        <div>
+                            <Label For="() => _itemFilter.ProfitStart" />
+                            <input type="number" min="0" step="1" @bind="_itemFilter.ProfitStart" />
+                            <Label For="() => _itemFilter.ProfitEnd" />
+                            <input type="number" @bind="_itemFilter.ProfitEnd" />
+                        </div>
+
+                        <div>
+                            <Label For="() => _itemFilter.Rank" />
+                            <input type="number" min="0" step="1" @bind="_itemFilter.Rank" />
+                        </div>
+
+                        <div>
+                            <Label For="() => _itemFilter.Tax" />
+                            <input @bind="_itemFilter.Tax" />
+                        </div>
+
+                        <div>
+                            <Label For="() => _itemFilter.Trend" />
+                            <input type="number" min="0" step="1" @bind="_itemFilter.Trend" />
+                        </div>
+
+                        <div>
+                            <Label For="() => _itemFilter.MetricType" />
+                            <select @onchange="arg => _itemFilter.TrySetMetricByIndex(arg.Value)">
+                                <option value="@ItemFilter.GetValueOfMetricType(ItemFilter.Metric.TwoDay)">
+                                    @ItemFilter.GetNameForMetricType(ItemFilter.Metric.TwoDay)
+                                </option>
+                                <option value="@ItemFilter.GetValueOfMetricType(ItemFilter.Metric.ThreeMonth)">
+                                    @ItemFilter.GetNameForMetricType(ItemFilter.Metric.ThreeMonth)
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -46,6 +100,7 @@
     </div>
 </div>
 
+@implements IDisposable
 @code {
 #pragma warning disable CS1998
     protected override async Task OnInitializedAsync()
@@ -54,13 +109,14 @@
         _ = AddItemsToSearch(_loadedItems);
         _sortedItems = _loadedItems.ToList(); // копирование для сортировки
     }
-
-#pragma warning restore
+#pragma warning restore CS1998
 
     private List<DemoItem> _loadedItems = [];
     private List<DemoItem> _sortedItems = [];
 
     #region SearchFields
+
+    private ItemFilter _itemFilter = new ItemFilter();
     private CancellationTokenSource _addManyItemsCancellationTokenSource = new();
     private CancellationTokenSource _searchFieldCancellationTokenSource = new();
     private BM25Searcher<DemoItem> demoItemMB25Searcher = new();
@@ -70,10 +126,11 @@
         await _addManyItemsCancellationTokenSource.CancelAsync();
         _addManyItemsCancellationTokenSource = new();
         await demoItemMB25Searcher.AddItems(_loadedItems, _addManyItemsCancellationTokenSource.Token);
-    }
-    #endregion
 
-    private async Task OnSearchFieldInput(ChangeEventArgs args)
+        _itemFilter.PropertyChanged += OnFilterPropertyChanged;
+    }
+
+    private async Task ApplyFilter(string query)
     {
         await _searchFieldCancellationTokenSource.CancelAsync();
         _searchFieldCancellationTokenSource = new();
@@ -83,12 +140,32 @@
             return;
         await Task.Delay(500);
 
+        if (!string.IsNullOrEmpty(query))
+            _sortedItems = await demoItemMB25Searcher.Search(query);
+        else
+            _sortedItems = _loadedItems;
+
+        _sortedItems = _itemFilter.Apply(_sortedItems.AsQueryable()).ToList();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnSearchFieldInput(ChangeEventArgs args)
+    {
         if (args.Value is string query)
         {
-            if (string.IsNullOrWhiteSpace(query))
-                _sortedItems = _loadedItems.ToList();
-            else
-                _sortedItems = await demoItemMB25Searcher.Search(query);
+            await ApplyFilter(query);
         }
+    }
+
+    #endregion SearchFields
+
+    private void OnFilterPropertyChanged(string query)
+    {
+        _ = ApplyFilter(query);
+    }
+
+    void IDisposable.Dispose()
+    {
+        _itemFilter.PropertyChanged -= OnFilterPropertyChanged;
     }
 }

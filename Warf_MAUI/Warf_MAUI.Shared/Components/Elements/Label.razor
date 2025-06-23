@@ -1,0 +1,30 @@
+﻿@using System.Linq.Expressions
+@using System.ComponentModel
+
+<span @attributes="Attributes">@text</span>
+
+@code {
+    [Parameter]
+    public Expression<Func<object>> For { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> Attributes { get; set; } = [];
+
+    private string text = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        Expression exp = For.Body;
+        while (exp is UnaryExpression uex)
+            exp = uex.Operand as Expression;
+
+        if (exp is MemberExpression mex)
+        {
+            var displayNameAttribute = mex.Member.GetCustomAttributes(
+                typeof(DisplayNameAttribute), true).FirstOrDefault()
+                as DisplayNameAttribute;
+            if (displayNameAttribute != null)
+                text = displayNameAttribute.DisplayName;
+        }
+    }
+}
