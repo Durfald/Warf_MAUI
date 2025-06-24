@@ -39,7 +39,7 @@
                             <Label For="() => _itemFilter.ProfitEnd" />
                             <input type="number" @bind="_itemFilter.ProfitEnd" />
                         </div>
-
+                        
                         <div>
                             <Label For="() => _itemFilter.Rank" />
                             <input type="number" min="0" step="1" @bind="_itemFilter.Rank" />
@@ -114,14 +114,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            @* <p class="uk-text-normal"></p>
-                            <p class="uk-text-normal">Цена продажи: @_sortedItems[index].SellValue</p>
-                            <p class="uk-text-normal">Разница: @_sortedItems[index].Profit</p>
-                            <p class="uk-text-normal">Ранг: @_sortedItems[index].Rank</p>
-                            <p class="uk-text-normal">Налог на торговлю: @_sortedItems[index].Tax</p>
-                            <p class="uk-text-normal">тренд цены: @_sortedItems[index].Trend</p>
-                            <p class="uk-margin-left">90 дней: @_sortedItems[index].ThreeMonthMetric</p>
-                            <p class="uk-margin-left">2 дня: @_sortedItems[index].TwoDayMetric</p> *@
+                            
                         </div>
                         <div>
                             <button class="uk-button uk-button-primary uk-align-center uk-border-rounded-small">

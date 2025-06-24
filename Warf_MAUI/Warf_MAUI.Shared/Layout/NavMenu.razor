@@ -56,14 +56,11 @@
     @* второй div блок - всегда внизу. Расширятется наверх. *@
     <ul class="uk-nav uk-width-1-1" style="padding-bottom: 0.5em;">
         <li>
-            <NavLink class="wa-main-navigation-button"
-                     href="/Configuration/Settings"
-                     Match="NavLinkMatch.All">
+            <a class="wa-main-navigation-button" uk-toggle="target: #my-id">
                 <i class="uk-icon-gears"></i> Настройки
                 <div class="wa-interactive-underline"></div>
-            </NavLink>
+            </a>
         </li>
     </ul>
-
     <script type="text/javascript" src="_content/Warf_MAUI.Shared/scripts/javascript/decorations/navigation-button-dynamic-underline.js" defer></script>
 </nav>
