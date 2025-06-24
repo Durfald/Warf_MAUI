@@ -44,21 +44,44 @@
 
 namespace Warf_MAUI.Shared.Common.BM25;
 
-// Trie-дерево для автодополнения
+/// <summary>
+/// Класс Trie, реализующий структуру данных Trie для хранения и поиска строк.
+/// </summary>
 public class Trie
 {
+    /// <summary>
+    /// Внутренний класс, представляющий узел Trie.
+    /// </summary>
     private class TrieNode
     {
+        /// <summary>
+        /// Словарь детей узла, где ключ - символ, а значение - дочерний узел.
+        /// </summary>
         public Dictionary<char, TrieNode> Children = new();
+
+        /// <summary>
+        /// Флаг, указывающий, является ли узел концом слова.
+        /// </summary>
         public bool IsEndOfWord;
     }
+
+    /// <summary>
+    /// Очищает Trie, удаляя все узлы.
+    /// </summary>
     public void Clear()
     {
         root.Children.Clear();
     }
 
+    /// <summary>
+    /// Корневой узел Trie.
+    /// </summary>
     private readonly TrieNode root = new();
 
+    /// <summary>
+    /// Добавляет слово в Trie.
+    /// </summary>
+    /// <param name="word">Слово для добавления.</param>
     public void Insert(string word)
     {
         var node = root;
@@ -71,6 +94,11 @@ public class Trie
         node.IsEndOfWord = true;
     }
 
+    /// <summary>
+    /// Возвращает список слов, начинающихся с заданного префикса.
+    /// </summary>
+    /// <param name="prefix">Префикс для поиска.</param>
+    /// <returns>Список слов, начинающихся с префикса.</returns>
     public List<string> GetWordsWithPrefix(string prefix)
     {
         var node = root;
@@ -85,6 +113,12 @@ public class Trie
         return results;
     }
 
+    /// <summary>
+    /// Рекурсивно находит все слова, начинающиеся с заданного узла.
+    /// </summary>
+    /// <param name="node">Узел для поиска.</param>
+    /// <param name="prefix">Префикс текущего узла.</param>
+    /// <param name="results">Список найденных слов.</param>
     private void FindWords(TrieNode node, string prefix, List<string> results)
     {
         if (node.IsEndOfWord) results.Add(prefix);

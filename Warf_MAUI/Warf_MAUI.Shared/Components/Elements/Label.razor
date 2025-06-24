@@ -4,27 +4,52 @@
 <span @attributes="Attributes">@text</span>
 
 @code {
+    /// <summary>
+    /// Параметр, принимающий лямбда-выражение для указания свойства или объекта.
+    /// Обычно используется для получения метаданных, например, атрибута DisplayName.
+    /// </summary>
     [Parameter]
-    public Expression<Func<object>> For { get; set; }
+    public Expression<Func<object>> For { get; set; } = null!;
 
+    /// <summary>
+    /// Параметр, позволяющий захватить все дополнительные атрибуты, переданные компоненту.
+    /// Используется для передачи произвольных HTML-атрибутов.
+    /// </summary>
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> Attributes { get; set; } = [];
+    public Dictionary<string, object> Attributes { get; set; } = new Dictionary<string, object>();
 
+    /// <summary>
+    /// Локальное поле для хранения текста, например, имени свойства из DisplayNameAttribute.
+    /// </summary>
     private string text = string.Empty;
 
+    /// <summary>
+    /// Переопределённый метод жизненного цикла компонента, вызываемый при инициализации.
+    /// Выполняет разбор выражения из параметра <see cref="For"/>, чтобы получить
+    /// атрибут <see cref="DisplayNameAttribute"/> и сохранить его значение в поле <see cref="text"/>.
+    /// </summary>
     protected override void OnInitialized()
     {
+        // Получаем тело выражения из лямбда-выражения For
         Expression exp = For.Body;
+
+        // Если тело выражения — унарное (например, преобразование типа),
+        // распаковываем его до базового MemberExpression
         while (exp is UnaryExpression uex)
             exp = uex.Operand as Expression;
 
+        // Проверяем, что выражение — обращение к члену (например, свойству)
         if (exp is MemberExpression mex)
         {
+            // Получаем атрибут DisplayNameAttribute из метаданных члена
             var displayNameAttribute = mex.Member.GetCustomAttributes(
                 typeof(DisplayNameAttribute), true).FirstOrDefault()
                 as DisplayNameAttribute;
+
+            // Если атрибут найден, сохраняем его значение в поле text
             if (displayNameAttribute != null)
                 text = displayNameAttribute.DisplayName;
         }
     }
+
 }

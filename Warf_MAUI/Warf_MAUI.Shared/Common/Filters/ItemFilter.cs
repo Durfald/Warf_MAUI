@@ -3,13 +3,23 @@ using Warf_MAUI.Shared.Common.Mock;
 
 namespace Warf_MAUI.Shared.Common.Filters
 {
+    /// <summary>
+    /// Класс фильтрации предметов по различным параметрам, включая цену покупки/продажи, прибыль, ранг и т.д.
+    /// </summary>
     internal class ItemFilter
     {
         private string _nameQuery = string.Empty;
-        internal void SetNameQuery(string query)
-        { _nameQuery = query; }
+
+        /// <summary>
+        /// Устанавливает строку поиска по имени (не используется в фильтрации напрямую).
+        /// </summary>
+        internal void SetNameQuery(string query) => _nameQuery = query;
 
         private int _buyValueStart = 0;
+
+        /// <summary>
+        /// Нижняя граница стоимости покупки.
+        /// </summary>
         [DisplayName("Стоимость покупки от")]
         internal int BuyValueStart
         {
@@ -22,6 +32,10 @@ namespace Warf_MAUI.Shared.Common.Filters
         }
 
         private int _buyValueEnd = -1;
+
+        /// <summary>
+        /// Верхняя граница стоимости покупки.
+        /// </summary>
         [DisplayName("до")]
         internal int BuyValueEnd
         {
@@ -34,6 +48,10 @@ namespace Warf_MAUI.Shared.Common.Filters
         }
 
         private int _sellValueStart = 0;
+
+        /// <summary>
+        /// Нижняя граница стоимости продажи.
+        /// </summary>
         [DisplayName("Стоимость продажи от")]
         internal int SellValueStart
         {
@@ -46,6 +64,10 @@ namespace Warf_MAUI.Shared.Common.Filters
         }
 
         private int _sellValueEnd = -1;
+
+        /// <summary>
+        /// Верхняя граница стоимости продажи.
+        /// </summary>
         [DisplayName("до")]
         internal int SellValueEnd
         {
@@ -58,6 +80,10 @@ namespace Warf_MAUI.Shared.Common.Filters
         }
 
         private int _profitStart = 0;
+
+        /// <summary>
+        /// Нижняя граница прибыли.
+        /// </summary>
         [DisplayName("Прибыль от")]
         internal int ProfitStart
         {
@@ -70,6 +96,10 @@ namespace Warf_MAUI.Shared.Common.Filters
         }
 
         private int _profitEnd = -1;
+
+        /// <summary>
+        /// Верхняя граница прибыли.
+        /// </summary>
         [DisplayName("до")]
         internal int ProfitEnd
         {
@@ -82,6 +112,10 @@ namespace Warf_MAUI.Shared.Common.Filters
         }
 
         private int _rank = -1;
+
+        /// <summary>
+        /// Точный фильтр по рангу (если задан).
+        /// </summary>
         [DisplayName("Ранг")]
         internal int Rank
         {
@@ -94,6 +128,10 @@ namespace Warf_MAUI.Shared.Common.Filters
         }
 
         private string _tax = string.Empty;
+
+        /// <summary>
+        /// Фильтр по налоговой категории (точное совпадение).
+        /// </summary>
         [DisplayName("Налог")]
         internal string Tax
         {
@@ -106,6 +144,10 @@ namespace Warf_MAUI.Shared.Common.Filters
         }
 
         private int _trend = -1;
+
+        /// <summary>
+        /// Фильтр по тренду (точное значение).
+        /// </summary>
         [DisplayName("Тренд")]
         internal int Trend
         {
@@ -117,18 +159,33 @@ namespace Warf_MAUI.Shared.Common.Filters
             }
         }
 
+        /// <summary>
+        /// Тип метрики, используемой для фильтрации (например, данные за 2 дня или за 3 месяца).
+        /// </summary>
         [DisplayName("Тип метрики")]
         internal Metric MetricType { get; set; } = Metric.TwoDay;
 
+        /// <summary>
+        /// Возможные типы метрик.
+        /// </summary>
         public enum Metric { TwoDay, ThreeMonth }
 
+        /// <summary>
+        /// Событие для уведомления об изменении свойства (передаёт _nameQuery).
+        /// </summary>
         internal event Action<string>? PropertyChanged;
 
+        /// <summary>
+        /// Вызов события PropertyChanged.
+        /// </summary>
         private void CallPropertyChanged()
         {
             PropertyChanged?.Invoke(_nameQuery);
         }
 
+        /// <summary>
+        /// Возвращает строковое представление значения метрики.
+        /// </summary>
         internal static string GetNameForMetricType(Metric type)
         {
             return type switch
@@ -139,6 +196,9 @@ namespace Warf_MAUI.Shared.Common.Filters
             };
         }
 
+        /// <summary>
+        /// Возвращает значение метрики по индексу в списке перечисления.
+        /// </summary>
         internal static Metric GetValueOfMetricType(Metric type)
         {
             var metrics = Enum.GetValues<Metric>().ToList();
@@ -148,6 +208,9 @@ namespace Warf_MAUI.Shared.Common.Filters
             return metrics.ElementAt(index);
         }
 
+        /// <summary>
+        /// Устанавливает значение MetricType по индексу, если возможно.
+        /// </summary>
         internal bool TrySetMetricByIndex(object? index)
         {
             if (index == null)
@@ -165,40 +228,50 @@ namespace Warf_MAUI.Shared.Common.Filters
             return false;
         }
 
+        /// <summary>
+        /// Применяет фильтры к источнику данных DemoItem.
+        /// </summary>
         internal List<DemoItem> Apply(IQueryable<DemoItem> source)
         {
+            // Фильтр по налогу
             if (!string.IsNullOrEmpty(Tax))
                 source = source.Where(x => string.Compare(x.Tax, Tax) == 0);
 
+            // Фильтры по стоимости покупки
             if (BuyValueStart > 0)
                 source = source.Where(x => x.BuyValue >= BuyValueStart);
             if (BuyValueEnd > -1)
                 source = source.Where(x => x.BuyValue <= BuyValueEnd);
 
+            // Фильтры по стоимости продажи
             if (SellValueStart > 0)
                 source = source.Where(x => x.SellValue >= SellValueStart);
             if (SellValueEnd > -1)
                 source = source.Where(x => x.SellValue <= SellValueEnd);
 
+            // Фильтры по прибыли
             if (ProfitStart > 0)
                 source = source.Where(x => x.Profit >= ProfitStart);
             if (ProfitEnd > -1)
                 source = source.Where(x => x.Profit <= ProfitEnd);
 
+            // Фильтр по рангу
             if (Rank > -1)
                 source = source.Where(x => x.Rank == Rank);
 
+            // Фильтр по тренду
             if (Trend > -1)
                 source = source.Where(x => x.Trend == Trend);
 
-            // todo: Я не понял что ты хочешь фильтровать в этой метрике.
+            // todo: Здесь можно добавить дополнительную логику фильтрации по значению метрики.
+            // Сейчас оба варианта фильтруют по полю ThreeMonthMetric != -1
             source = MetricType switch
             {
                 Metric.ThreeMonth => source.Where(x => x.ThreeMonthMetric != -1),
-                _ => source.Where(x => x.ThreeMonthMetric != -1), // 2 дня - дефолт
+                _ => source.Where(x => x.ThreeMonthMetric != -1), // Заглушка для "2 дня"
             };
 
-            return [.. source];
+            return [.. source]; // Преобразует IQueryable в List
         }
     }
 }

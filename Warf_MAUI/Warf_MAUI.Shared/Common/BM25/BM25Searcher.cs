@@ -134,7 +134,7 @@ public class BM25Searcher<T> where T : class, ISearchableItem
     #region public 
 
     /// <summary>
-    /// 
+    /// Очищает коллекцию и сбрасывает все индексы и Trie.
     /// </summary>
     public void Clear()
     {
@@ -149,9 +149,11 @@ public class BM25Searcher<T> where T : class, ISearchableItem
     }
 
     /// <summary>
-    /// 
+    /// Добавляет коллекцию элементов в коллекцию.
     /// </summary>
-    /// <param name="items"></param>
+    /// <param name="items">Коллекция элементов для добавления.</param>
+    /// <param name="token">Токен отмены операции. Если задан, добавление может быть прервано.</param>
+    /// <returns>Задача, представляющая добавление элементов.</returns>
     public Task AddItems(IEnumerable<T> items, CancellationToken? token = null)
     {
         foreach (var item in items)
@@ -165,9 +167,9 @@ public class BM25Searcher<T> where T : class, ISearchableItem
     }
 
     /// <summary>
-    /// 
+    /// Добавляет новый элемент в коллекцию.
     /// </summary>
-    /// <param name="item"></param>
+    /// <param name="item">Элемент, который необходимо добавить.</param>
     public void AddItem(T item)
     {
         int itemId = items.Count;
@@ -199,10 +201,11 @@ public class BM25Searcher<T> where T : class, ISearchableItem
     }
 
     /// <summary>
-    /// 
+    /// Выполняет поиск по заданному запросу и возвращает список результатов.
     /// </summary>
-    /// <param name="query"></param>
-    /// <returns></returns>
+    /// <param name="query">Запрос для поиска.</param>
+    /// <param name="token">Токен отмены операции. Если задан, поиск может быть прерван.</param>
+    /// <returns>Список результатов поиска.</returns>
     public Task<List<T>> Search(string query, CancellationToken? token = null)
     {
         var queryWords = query.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -231,10 +234,12 @@ public class BM25Searcher<T> where T : class, ISearchableItem
     }
 
     /// <summary>
-    /// Автодополнение
+    /// Возвращает список строк, начинающихся с заданного префикса.
+    /// Этот метод используется для автодополнения ввода пользователя.
     /// </summary>
-    /// <param name="prefix"></param>
-    /// <returns></returns>
+    /// <param name="prefix">Префикс для автодополнения. Преобразуется в нижний регистр перед поиском.</param>
+    /// <returns>Список строк, начинающихся с заданного префикса.</returns>
+    /// <remarks>Метод использует trie-структуру для быстрого поиска строк.</remarks>
     public List<string> GetAutocompleteSuggestions(string prefix)
     {
         return autocompleteTrie.GetWordsWithPrefix(prefix.ToLower());

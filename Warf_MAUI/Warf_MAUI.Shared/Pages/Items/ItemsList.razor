@@ -16,7 +16,7 @@
 
             <div class="uk-inline">
                 <button class="uk-button uk-button-primary uk-border-rounded" type="button"><i class="fa-solid fa-filter"></i></button>
-                <div class="uk-dropbar uk-dropbar-top uk-panel-box-primary wa-search-body-decorations" uk-drop>
+                <div class="uk-dropbar uk-dropbar-top uk-panel-box-primary wa-search-body-decorations" uk-drop="mode: hover">
                     <div class="background uk-display-block wa-search-body">
                         <p class="uk-card-title">Фильтры</p>
                         <div>
@@ -134,7 +134,7 @@
 #pragma warning disable CS1998
     protected override async Task OnInitializedAsync()
     {
-        _loadedItems = MockItemList.GenerateDemoItems(150);
+        _loadedItems = MockItemList.GenerateDemoItems(3000);
         _ = AddItemsToSearch(_loadedItems);
         _sortedItems = _loadedItems.ToList(); // копирование для сортировки
     }
