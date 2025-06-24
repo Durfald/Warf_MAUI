@@ -6560,7 +6560,15 @@ iframe[data-uk-cover], iframe[uk-cover] {
 }
 
 .uk-border-rounded {
-    border-radius: 5px
+    border-radius: 7px
+}
+
+.uk-border-rounded-small {
+    border-radius: 5px;
+}
+
+.uk-border-rounded-large {
+    border-radius: 11px;
 }
 
 .uk-inline-clip[class*=uk-border-] {

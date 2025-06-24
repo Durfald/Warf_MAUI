@@ -9,13 +9,13 @@
         <div>
         </div>
         <div class="uk-flex uk-flex-row">
-            <div class="uk-panel-box-primary border-radius uk-margin-right">
+            <div class="uk-panel-box-primary uk-border-rounded uk-margin-right">
                 <input class="uk-search-field" type="search" placeholder="Поиск..."
                        autocomplete="off" @oninput="OnSearchFieldInput">
             </div>
 
             <div class="uk-inline">
-                <button class="uk-button uk-button-primary border-radius" type="button"><i class="fa-solid fa-filter"></i></button>
+                <button class="uk-button uk-button-primary uk-border-rounded" type="button"><i class="fa-solid fa-filter"></i></button>
                 <div class="uk-dropbar uk-dropbar-top uk-panel-box-primary wa-search-body-decorations" uk-drop>
                     <div class="background uk-display-block wa-search-body">
                         <p class="uk-card-title">Фильтры</p>
@@ -71,14 +71,14 @@
             </div>
         </div>
     </div>
-    <div class="uk-panel-box full-space border-radius">
+    <div class="uk-panel-box full-space uk-border-rounded">
         <ul class="uk-grid-small uk-grid-match" uk-grid>
 
             @for (int i = 0; i < _sortedItems.Count; i++)
             {
                 int index = i;
                 <li class="uk-width-1-6 ">
-                    <div class="uk-panel-box-primary border-radius">
+                    <div class="uk-panel-box-primary uk-border-rounded">
                         <h3 class="uk-card-title uk-text-center uk-text-top">@_sortedItems[index].Name</h3>
                         <img class="uk-align-center" src="_content/Warf_MAUI.Shared/svg/ducat_light.svg" alt="Item @i" width="64" height="64">
                         <div class="uk-margin-left">
@@ -124,7 +124,7 @@
                             <p class="uk-margin-left">2 дня: @_sortedItems[index].TwoDayMetric</p> *@
                         </div>
                         <div>
-                            <button class="uk-button uk-button-primary uk-align-center border-radius-small">
+                            <button class="uk-button uk-button-primary uk-align-center uk-border-rounded-small">
                                 добавить
                             </button>
                         </div>
