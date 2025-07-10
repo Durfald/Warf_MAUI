@@ -1,0 +1,65 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using Warf_MAUI.Shared.Components.Elements
+@using Warf_MAUI.Shared.Services
+
+
+<div class="uk-grid uk-child-width-1-1">
+    <div class="uk-margin-small">
+        <Label For="() => Settings.LoginForm.Email"></Label>
+        <input @bind="Settings.LoginForm.Email" type="text" class="uk-input" />
+    </div>
+
+    <div class="uk-margin-small">
+        <Label For="() => Settings.LoginForm.Password"></Label>
+        <input @bind="Settings.LoginForm.Password" type="password" class="uk-input" />
+    </div>
+
+    @if (formStatus)
+    {
+        <div class="uk-margin-small uk-text-center uk-animation-fade uk-animation-fast">
+            <span class="uk-label-success" style="padding: 10px;">Форма валидна</span>
+        </div>
+    }
+
+    @foreach (var item in results)
+    {
+        <span class="uk-label-danger uk-animation-fade uk-animation-fast">
+            @item.ErrorMessage
+        </span>
+    }
+    <div class="uk-margin-small uk-text-center">
+        <button class="uk-button uk-button-default" @onclick="LogIn">Вход</button>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public required NetworkSettings Settings { get; set; }
+
+    private List<ValidationResult> results = [];
+    private ValidationContext context = null!;
+    private bool formStatus = false;
+
+
+    protected override void OnInitialized()
+    {
+        context = new ValidationContext(Settings.LoginForm);
+    }
+
+    private async Task LogIn(MouseEventArgs args)
+    {
+        results.Clear();
+        formStatus = false;
+
+        var formValid = Validator.TryValidateObject(Settings.LoginForm, context, results, true);
+        if (formValid)
+        {
+            formStatus = true;
+            // do network
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+}
+

@@ -1,0 +1,12 @@
+﻿@using Warf_MAUI.Shared.Services
+<div class="uk-grid uk-child-width-1-1">
+    <p class="uk-h1 uk-text-success">Ну и чего ты?</p>
+    <span class="uk-text-warning">Иди, иди! Ухади астуда!</span>
+    <span class="uk-text-danger uk-text-lead">Выключай!</span>
+</div>
+
+@code {
+    [Parameter]
+    public required NotificationSettings Settings { get; set; }
+}
+

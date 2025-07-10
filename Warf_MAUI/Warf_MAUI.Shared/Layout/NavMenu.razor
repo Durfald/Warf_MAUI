@@ -6,7 +6,7 @@
         - .uk-flex-stretch@l Only affects device widths of 1200px and higher.
 *@
 
-<nav id="application_main_nav" class="uk-flex uk-flex-column uk-flex-space-between uk-height-1-1">
+<nav id="application_main_nav" class="uk-flex uk-flex-column uk-flex-space-between uk-height-1-1 wa-navigation-container">
 
     @* первый div блок - всегда вверху. Расширяется вниз *@
 
@@ -24,7 +24,8 @@
             <NavLink class="wa-main-navigation-button"
                      href="/Items/ItemsList"
                      Match="NavLinkMatch.All">
-                <i class="fa-solid fa-cubes-stacked uk-icon"></i> Предметы
+                <i class="fa-solid fa-cubes-stacked uk-icon"></i>
+                Предметы
                 <div class="wa-interactive-underline"></div>
             </NavLink>
         </li>
@@ -38,7 +39,8 @@
             <NavLink class="wa-main-navigation-button"
                      href="/Market/MarketMain"
                      Match="NavLinkMatch.All">
-                <i class="uk-icon-shopping-cart"></i> Магазин
+                <i class="uk-icon-shopping-cart"></i>
+                Магазин
                 <div class="wa-interactive-underline"></div>
             </NavLink>
         </li>
@@ -56,11 +58,13 @@
     @* второй div блок - всегда внизу. Расширятется наверх. *@
     <ul class="uk-nav uk-width-1-1" style="padding-bottom: 0.5em;">
         <li>
-            <a class="wa-main-navigation-button" uk-toggle="target: #my-id">
+            <a class="wa-main-navigation-button"
+               uk-toggle="target: #@(Warf_MAUI.Shared.Common.WarframeDefaults.ApplicationUserSettingsComponentId)">
                 <i class="uk-icon-gears"></i> Настройки
                 <div class="wa-interactive-underline"></div>
             </a>
         </li>
     </ul>
-    <script type="text/javascript" src="_content/Warf_MAUI.Shared/scripts/javascript/decorations/navigation-button-dynamic-underline.js" defer></script>
+
+    <script type="text/javascript" src="_content/Warf_MAUI.Shared/scripts/javascript/decorations/navigation-button-dynamic-underline.js"></script>
 </nav>

@@ -1,6 +1,75 @@
-﻿@page "/Configuration/Settings"
-<h3>Настройки</h3>
+﻿@using Warf_MAUI.Shared.Services
+<div id="@Warf_MAUI.Shared.Common.WarframeDefaults.ApplicationUserSettingsComponentId" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <h2 class="uk-modal-title uk-text-center">Настройки</h2>
 
+        <div class="@("uk-visible\\@m") uk-hidden\@@s wa-navigation-container">
+            <ul class="uk-nav uk-child-width-1-4 uk-text-center">
+                <li class="uk-display-inline-block">
+                    <a @onclick="OpenGeneralSettings" class="wa-main-navigation-button"
+                       wa-decoration-underline-forced-initial-width="100">
+                        Основные
+                        <div class="wa-interactive-underline"></div>
+                    </a>
+                </li>
+                <li class="uk-display-inline-block">
+                    <a @onclick="OpenNetworkSettings" class="wa-main-navigation-button"
+                       wa-decoration-underline-forced-initial-width="100">
+                        Сетевые настройки
+                        <div class="wa-interactive-underline"></div>
+                    </a>
+                </li>
+                <li class="uk-display-inline-block">
+                    <a @onclick="OpenNotificationsSettings" class="wa-main-navigation-button"
+                       wa-decoration-underline-forced-initial-width="100">
+                        Оповещения
+                        <div class="wa-interactive-underline"></div>
+                    </a>
+                </li>
+            </ul>
+
+            @switch (_pageIndex)
+            {
+                case 0:
+                    <PageGeneral Settings="applicationSettings.General"> </PageGeneral>
+                    break;
+                case 1:
+                    <PageNetwork Settings="applicationSettings.Network"> </PageNetwork>
+                    break;
+                default:
+                    <PageNotifications Settings="applicationSettings.Notifications"> </PageNotifications>
+                    break;
+            }
+        </div>
+
+        <p class="uk-text-center">
+            <button class="uk-modal-close uk-button uk-button-default">
+                Закрыть
+            </button>
+        </p>
+    </div>
+
+</div>
+
+@inject ApplicationSettings applicationSettings
 @code {
+    private int _pageIndex { get; set; } = 0;
 
+    private Task OpenGeneralSettings()
+    {
+        _pageIndex = 0;
+        return Task.CompletedTask;
+    }
+
+    private Task OpenNetworkSettings()
+    {
+        _pageIndex = 1;
+        return Task.CompletedTask;
+    }
+
+    private Task OpenNotificationsSettings()
+    {
+        _pageIndex = 2;
+        return Task.CompletedTask;
+    }
 }
