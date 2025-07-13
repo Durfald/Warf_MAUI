@@ -134,7 +134,7 @@
 #pragma warning disable CS1998
     protected override async Task OnInitializedAsync()
     {
-        _loadedItems = MockItemList.GenerateDemoItems(3000);
+        _loadedItems = MockItemList.GenerateDemoItems(50);
         _ = AddItemsToSearch(_loadedItems);
         _sortedItems = _loadedItems.ToList(); // копирование для сортировки
     }

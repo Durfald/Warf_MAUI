@@ -36,3 +36,15 @@
 [aria-expanded=true] > .uk-drop-parent-icon {
     transform: rotateX(180deg)
 }
+
+.uk-border-rounded {
+    border-radius: 7px
+}
+
+.uk-border-rounded-small {
+    border-radius: 5px;
+}
+
+.uk-border-rounded-large {
+    border-radius: 11px;
+}
