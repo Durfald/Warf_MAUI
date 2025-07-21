@@ -17,17 +17,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0-rc.2.24474.3" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.7" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="RestSharp" Version="112.1.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="WebAPI\Clients\WarframeMarket\" />
-    <Folder Include="WebAPI\Contracts\WarframeMarket\" />
-    <Folder Include="WebAPI\DTO\My\" />
-    <Folder Include="WebAPI\DTO\WarframeMarket\" />
-    <Folder Include="WebAPI\Models\WarframeMarket\" />
-    <Folder Include="WebAPI\Services\" />
     <Folder Include="wwwroot\scripts\javascript\" />
     <Folder Include="wwwroot\styles\css\" />
     <Folder Include="Background\" />

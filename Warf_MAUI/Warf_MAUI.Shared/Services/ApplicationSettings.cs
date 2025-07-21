@@ -125,10 +125,10 @@ namespace Warf_MAUI.Shared.Services
     public class GeneralSettings
     {
         [DisplayName("Минимальный объём продаж за 2 дня")]
-        public int TwoDaySellVolume { get; set; } = 0;
+        public int TwoDaySellVolume { get; set; } = 60;
 
         [DisplayName("Минимальная разница цены между покупкой и продажей")]
-        public float MinPriceDifference { get; set; } = 0;
+        public float MinPriceDifference { get; set; } = 15;
 
         private string _language = string.Empty;
         [DisplayName("Язык")]

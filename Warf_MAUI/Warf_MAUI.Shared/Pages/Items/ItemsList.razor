@@ -13,10 +13,10 @@
                 <input class="uk-search-field" type="search" placeholder="Поиск..."
                        autocomplete="off" @oninput="OnSearchFieldInput">
             </div>
-
             <div class="uk-inline">
+                
                 <button class="uk-button uk-button-primary uk-border-rounded" type="button"><i class="fa-solid fa-filter"></i></button>
-                <div class="uk-dropbar uk-dropbar-top uk-panel-box-primary wa-search-body-decorations" uk-drop="mode: hover">
+                <div class="uk-dropbar uk-dropbar-top uk-panel-box-primary wa-search-body-decorations" uk-drop>
                     <div class="background uk-display-block wa-search-body">
                         <p class="uk-card-title">Фильтры</p>
                         <div>
@@ -82,7 +82,7 @@
                         <h3 class="uk-card-title uk-text-center uk-text-top">@_sortedItems[index].Name</h3>
                         <img class="uk-align-center" src="_content/Warf_MAUI.Shared/svg/ducat_light.svg" alt="Item @i" width="64" height="64">
                         <div class="uk-margin-left">
-                            <table class="uk-table uk-table-small uk-table-divider">
+                            <table class="uk-table uk-table-small">
                                 <tbody>
                                     <tr>
                                         <td>Цена покупки:</td>
