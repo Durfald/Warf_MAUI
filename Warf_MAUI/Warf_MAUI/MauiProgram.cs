@@ -1,14 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.Maui.LifecycleEvents;
+﻿using Microsoft.Extensions.Logging;
 using Warf_MAUI.Services;
 using Warf_MAUI.Shared.Common.WebAPI.Interfaces;
 using Warf_MAUI.Shared.Common.WebAPI.Storage.FileStorage;
 using Warf_MAUI.Shared.Common.WebAPI.Storage.MemoryStorage;
 using Warf_MAUI.Shared.Common.WebAPI.WebClient;
-using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyApiClient;
-using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyApiClient.Service;
+using Warf_MAUI.Shared.Common.WebAPI.WebClients;
+using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient;
+using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Service;
 using Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient;
 using Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Services;
 using Warf_MAUI.Shared.Services;
@@ -64,6 +62,7 @@ namespace Warf_MAUI
             builder.Services.AddSingleton<IOrderService, OrderService>();
             builder.Services.AddSingleton<WarframeMarketApiClient>();
 
+            builder.Services.AddSingleton<CombinedApiClient>();
 
 #if WINDOWS
             builder.AddBuildForWindows();

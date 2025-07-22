@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
+using Warf_MAUI.Shared.Common.BM25;
 
-namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyApiClient.Models
+namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
 {
-    public class Item
+    public class Item : ISearchableItem
     {
         [JsonProperty("id")]
         public string Id { get; set; } = string.Empty;
@@ -11,7 +12,7 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyApiClient.Models
         public string UrlName { get; set; } = string.Empty;
 
         [JsonProperty("name")]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; init; } = string.Empty;
 
         [JsonProperty("liquidity", NullValueHandling = NullValueHandling.Ignore)]
         public int? Liquidity { get; set; }

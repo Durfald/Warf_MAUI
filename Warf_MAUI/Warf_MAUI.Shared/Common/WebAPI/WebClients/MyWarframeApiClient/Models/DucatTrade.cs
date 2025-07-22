@@ -1,4 +1,4 @@
-﻿namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyApiClient.Models
+﻿namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
 {
     public class DucatTrade
     {

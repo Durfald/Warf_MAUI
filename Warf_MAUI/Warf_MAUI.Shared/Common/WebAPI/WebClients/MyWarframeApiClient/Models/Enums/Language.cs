@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization;
 
-namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyApiClient.Models.Enums
+namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models.Enums
 {
     /// <summary>
     /// One of the languages supported by the backend. 

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Warf_MAUI.Shared.Common.Mock;
+using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models;
 
 namespace Warf_MAUI.Shared.Common.Filters
 {
@@ -168,7 +169,7 @@ namespace Warf_MAUI.Shared.Common.Filters
         /// <summary>
         /// Возможные типы метрик.
         /// </summary>
-        public enum Metric { TwoDay, ThreeMonth }
+        public enum Metric { TwoDay, NinetyDays }
 
         /// <summary>
         /// Событие для уведомления об изменении свойства (передаёт _nameQuery).
@@ -191,7 +192,7 @@ namespace Warf_MAUI.Shared.Common.Filters
             return type switch
             {
                 Metric.TwoDay => "Два дня",
-                Metric.ThreeMonth => "Три месяца",
+                Metric.NinetyDays => "Три месяца",
                 _ => "NOT SET"
             };
         }
@@ -229,31 +230,31 @@ namespace Warf_MAUI.Shared.Common.Filters
         }
 
         /// <summary>
-        /// Применяет фильтры к источнику данных DemoItem.
+        /// Применяет фильтры к источнику данных Item.
         /// </summary>
-        internal List<DemoItem> Apply(IQueryable<DemoItem> source)
+        internal List<Item> Apply(IQueryable<Item> source)
         {
             // Фильтр по налогу
             if (!string.IsNullOrEmpty(Tax))
-                source = source.Where(x => string.Compare(x.Tax, Tax) == 0);
+                source = source.Where(x => string.Compare(x.TradingTax.ToString(), Tax) == 0);
 
             // Фильтры по стоимости покупки
             if (BuyValueStart > 0)
-                source = source.Where(x => x.BuyValue >= BuyValueStart);
+                source = source.Where(x => x.BuyPrice >= BuyValueStart);
             if (BuyValueEnd > -1)
-                source = source.Where(x => x.BuyValue <= BuyValueEnd);
+                source = source.Where(x => x.BuyPrice <= BuyValueEnd);
 
             // Фильтры по стоимости продажи
             if (SellValueStart > 0)
-                source = source.Where(x => x.SellValue >= SellValueStart);
+                source = source.Where(x => x.SellPrice >= SellValueStart);
             if (SellValueEnd > -1)
-                source = source.Where(x => x.SellValue <= SellValueEnd);
+                source = source.Where(x => x.SellPrice <= SellValueEnd);
 
             // Фильтры по прибыли
             if (ProfitStart > 0)
-                source = source.Where(x => x.Profit >= ProfitStart);
+                source = source.Where(x => x.Spread >= ProfitStart);
             if (ProfitEnd > -1)
-                source = source.Where(x => x.Profit <= ProfitEnd);
+                source = source.Where(x => x.Spread <= ProfitEnd);
 
             // Фильтр по рангу
             if (Rank > -1)
@@ -261,14 +262,14 @@ namespace Warf_MAUI.Shared.Common.Filters
 
             // Фильтр по тренду
             if (Trend > -1)
-                source = source.Where(x => x.Trend == Trend);
+                source = source.Where(x => x.DaysTrend == Trend);
 
             // todo: Здесь можно добавить дополнительную логику фильтрации по значению метрики.
             // Сейчас оба варианта фильтруют по полю ThreeMonthMetric != -1
             source = MetricType switch
             {
-                Metric.ThreeMonth => source.Where(x => x.ThreeMonthMetric != -1),
-                _ => source.Where(x => x.ThreeMonthMetric != -1), // Заглушка для "2 дня"
+                Metric.NinetyDays => source.Where(x => x.DaysTrend != -1),
+                _ => source.Where(x => x.DaysTrend != -1), // Заглушка для "2 дня"
             };
 
             return [.. source]; // Преобразует IQueryable в List

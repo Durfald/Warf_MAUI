@@ -1,14 +1,14 @@
 ﻿using Warf_MAUI.Shared.Common.WebAPI.Interfaces;
-using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyApiClient.Models;
+using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models;
 
-namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyApiClient.Service
+namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Service
 {
     public class InfoService : IInfoService
     {
-        private readonly IHttpClient _httpClient;
+        private readonly IHttpClientMy _httpClient;
         //private readonly ILogger<InfoService> _logger;
 
-        public InfoService(IHttpClient httpClient)
+        public InfoService(IHttpClientMy httpClient)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             //_logger = logger ?? throw new ArgumentNullException(nameof(logger));

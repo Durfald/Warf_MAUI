@@ -1,6 +1,6 @@
-﻿using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyApiClient.Models;
+﻿using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models;
 
-namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyApiClient.Service
+namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Service
 {
     public interface IInfoService
     {

@@ -2,19 +2,26 @@
 @using Warf_MAUI.Shared.Common.BM25
 @using Warf_MAUI.Shared.Common.Mock
 @using Warf_MAUI.Shared.Common.Filters
+@using Warf_MAUI.Shared.Common.WebAPI.WebClients
+@using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
 @using Warf_MAUI.Shared.Components.Elements
+
+@inject CombinedApiClient _apiClient;
 
 <div>
     <div class="uk-margin uk-flex uk-flex-between uk-flex-wrap">
         <div>
+            <button class="uk-button uk-button-primary uk-align-center uk-border-rounded-small" @onclick="FillItems">
+                Обновить
+            </button>
         </div>
         <div class="uk-flex uk-flex-row">
             <div class="uk-panel-box-primary uk-border-rounded uk-margin-right">
                 <input class="uk-search-field" type="search" placeholder="Поиск..."
-                       autocomplete="off" @oninput="OnSearchFieldInput">
+                autocomplete="off" @oninput="OnSearchFieldInput">
             </div>
             <div class="uk-inline">
-                
+
                 <button class="uk-button uk-button-primary uk-border-rounded" type="button"><i class="fa-solid fa-filter"></i></button>
                 <div class="uk-dropbar uk-dropbar-top uk-panel-box-primary wa-search-body-decorations" uk-drop>
                     <div class="background uk-display-block wa-search-body">
@@ -39,7 +46,7 @@
                             <Label For="() => _itemFilter.ProfitEnd" />
                             <input type="number" @bind="_itemFilter.ProfitEnd" />
                         </div>
-                        
+
                         <div>
                             <Label For="() => _itemFilter.Rank" />
                             <input type="number" min="0" step="1" @bind="_itemFilter.Rank" />
@@ -61,8 +68,8 @@
                                 <option value="@ItemFilter.GetValueOfMetricType(ItemFilter.Metric.TwoDay)">
                                     @ItemFilter.GetNameForMetricType(ItemFilter.Metric.TwoDay)
                                 </option>
-                                <option value="@ItemFilter.GetValueOfMetricType(ItemFilter.Metric.ThreeMonth)">
-                                    @ItemFilter.GetNameForMetricType(ItemFilter.Metric.ThreeMonth)
+                                <option value="@ItemFilter.GetValueOfMetricType(ItemFilter.Metric.NinetyDays)">
+                                    @ItemFilter.GetNameForMetricType(ItemFilter.Metric.NinetyDays)
                                 </option>
                             </select>
                         </div>
@@ -86,35 +93,38 @@
                                 <tbody>
                                     <tr>
                                         <td>Цена покупки:</td>
-                                        <td>@_sortedItems[index].BuyValue</td>
+                                        <td>@_sortedItems[index].BuyPrice</td>
                                     </tr>
                                     <tr>
                                         <td>Цена продажи:</td>
-                                        <td>@_sortedItems[index].SellValue</td>
+                                        <td>@_sortedItems[index].SellPrice</td>
                                     </tr>
                                     <tr>
                                         <td>Разница:</td>
-                                        <td>@_sortedItems[index].Profit</td>
+                                        <td>@_sortedItems[index].Spread</td>
                                     </tr>
-                                    <tr>
-                                        <td>Ранг:</td>
-                                        <td>@_sortedItems[index].Rank</td>
-                                    </tr>
+                                    @if (_sortedItems[index].Rank != null)
+                                    {
+                                        <tr>
+                                            <td>Ранг:</td>
+                                            <td>@_sortedItems[index].Rank</td>
+                                        </tr>
+                                    }
                                     <tr>
                                         <td>Налог на торговлю:</td>
-                                        <td>@_sortedItems[index].Tax</td>
+                                        <td>@_sortedItems[index].TradingTax</td>
                                     </tr>
                                     <tr>
-                                        <td>Тренд цены 90дней:</td>
-                                            <td>@_sortedItems[index].ThreeMonthMetric</td>
+                                        <td>Тренд цены 90 дней:</td>
+                                        <td>@_sortedItems[index].DaysTrend</td>
                                     </tr>
                                     <tr>
-                                        <td>Тренд цены 2дней:</td>
-                                        <td>@_sortedItems[index].TwoDayMetric</td>
+                                        <td>Тренд цены 2 дней:</td>
+                                        <td>@_sortedItems[index].HoursTrend</td>
                                     </tr>
                                 </tbody>
                             </table>
-                            
+
                         </div>
                         <div>
                             <button class="uk-button uk-button-primary uk-align-center uk-border-rounded-small">
@@ -131,24 +141,29 @@
 
 @implements IDisposable
 @code {
-#pragma warning disable CS1998
+    #pragma warning disable CS1998
     protected override async Task OnInitializedAsync()
     {
-        _loadedItems = MockItemList.GenerateDemoItems(50);
+        // _loadedItems = MockItemList.GenerateDemoItems(50);
+        // _ = AddItemsToSearch(_loadedItems);
+        // _sortedItems = _loadedItems.ToList(); //копирование для сортировки
+
+        _loadedItems = await UpdateItems();
         _ = AddItemsToSearch(_loadedItems);
-        _sortedItems = _loadedItems.ToList(); // копирование для сортировки
+        _sortedItems = _loadedItems.ToList();
+
     }
 #pragma warning restore CS1998
 
-    private List<DemoItem> _loadedItems = [];
-    private List<DemoItem> _sortedItems = [];
+    private List<Item> _loadedItems = [];
+    private List<Item> _sortedItems = [];
 
     #region SearchFields
 
     private ItemFilter _itemFilter = new ItemFilter();
     private CancellationTokenSource _addManyItemsCancellationTokenSource = new();
     private CancellationTokenSource _searchFieldCancellationTokenSource = new();
-    private BM25Searcher<DemoItem> demoItemMB25Searcher = new();
+    private BM25Searcher<Item> demoItemMB25Searcher = new();
 
     private async Task AddItemsToSearch(IEnumerable<dynamic> items)
     {
@@ -187,6 +202,22 @@
     }
 
     #endregion SearchFields
+
+    private async Task<List<Item>> UpdateItems()
+    {
+        var itemsresult = await  _apiClient.My.GetSortedItemsAsync();
+        Item[] items = [..itemsresult.Last90Days, ..itemsresult.Last48Hours];
+        return items.ToList();
+    }
+
+    private async Task FillItems()
+    {
+        _loadedItems.Clear();
+
+        _loadedItems = await UpdateItems();
+        _ = AddItemsToSearch(_loadedItems);
+        _sortedItems = _loadedItems.ToList();
+    }
 
     private void OnFilterPropertyChanged(string query)
     {

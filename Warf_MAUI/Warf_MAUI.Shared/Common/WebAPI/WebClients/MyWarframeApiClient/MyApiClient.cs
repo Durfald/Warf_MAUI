@@ -1,7 +1,7 @@
-﻿using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyApiClient.Models;
-using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyApiClient.Service;
+﻿using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models;
+using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Service;
 
-namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyApiClient
+namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient
 {
     public class MyApiClient
     {
@@ -21,4 +21,4 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyApiClient
 
         public Task<IEnumerable<ItemShort>> GetDetailsAsync(string language = "ru") => _myInfoService.GetDetailsAsync(language);
     }
-}
+} 

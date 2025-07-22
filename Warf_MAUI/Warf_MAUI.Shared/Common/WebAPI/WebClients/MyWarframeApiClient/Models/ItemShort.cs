@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyApiClient.Models.Enums;
+using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models.Enums;
 
-namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyApiClient.Models
+namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
 {
     // Represents a summary of an item in the game.
     // Представляет краткую информацию об игровом предмете.

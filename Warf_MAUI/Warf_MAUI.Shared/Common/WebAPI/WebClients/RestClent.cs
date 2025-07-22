@@ -54,7 +54,8 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClient
         }
         private async Task<ApiResponse<T>> ExecuteRequest<T>(RestRequest request, int attempt = 1, int maxAttempts = 5) where T : class
         {
-            await _rateLimitChannel.Reader.ReadAsync();
+            if(_maxRateLimit > 0)
+                await _rateLimitChannel.Reader.ReadAsync();
             var response = await _client.ExecuteAsync(request);
 
             var apiResponse = new ApiResponse<T>
@@ -92,7 +93,8 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClient
 
         private async Task<ApiResponse> ExecuteRequest(RestRequest request, int attempt = 1, int maxAttempts = 5)
         {
-            await _rateLimitChannel.Reader.ReadAsync();
+            if (_maxRateLimit > 0)
+                await _rateLimitChannel.Reader.ReadAsync();
             var response = await _client.ExecuteAsync(request);
 
             var apiResponse = new ApiResponse
