@@ -16,6 +16,22 @@ namespace Warf_MAUI.Shared.Common.Filters
         /// </summary>
         internal void SetNameQuery(string query) => _nameQuery = query;
 
+        private bool _use90Days;
+
+        /// <summary>true = 90 дней, false = 48 часов</summary>
+        [DisplayName("Тип метрики")]
+        internal bool Use90Days
+        {
+            get => _use90Days;
+            set
+            {
+                if (_use90Days == value) return;
+                _use90Days = value;
+                CallPropertyChanged();
+            }
+        }
+
+
         private int _buyValueStart = 0;
 
         /// <summary>
@@ -163,13 +179,13 @@ namespace Warf_MAUI.Shared.Common.Filters
         /// <summary>
         /// Тип метрики, используемой для фильтрации (например, данные за 2 дня или за 3 месяца).
         /// </summary>
-        [DisplayName("Тип метрики")]
-        internal Metric MetricType { get; set; } = Metric.TwoDay;
+        //[DisplayName("Тип метрики")]
+        //internal Metric MetricType { get; set; } = Metric.TwoDay;
 
         /// <summary>
         /// Возможные типы метрик.
         /// </summary>
-        public enum Metric { TwoDay, NinetyDays }
+        //public enum Metric { TwoDay, NinetyDays }
 
         /// <summary>
         /// Событие для уведомления об изменении свойства (передаёт _nameQuery).
@@ -187,47 +203,47 @@ namespace Warf_MAUI.Shared.Common.Filters
         /// <summary>
         /// Возвращает строковое представление значения метрики.
         /// </summary>
-        internal static string GetNameForMetricType(Metric type)
-        {
-            return type switch
-            {
-                Metric.TwoDay => "Два дня",
-                Metric.NinetyDays => "Три месяца",
-                _ => "NOT SET"
-            };
-        }
+        //internal static string GetNameForMetricType(Metric type)
+        //{
+        //    return type switch
+        //    {
+        //        Metric.TwoDay => "Два дня",
+        //        Metric.NinetyDays => "Три месяца",
+        //        _ => "NOT SET"
+        //    };
+        //}
 
         /// <summary>
         /// Возвращает значение метрики по индексу в списке перечисления.
         /// </summary>
-        internal static Metric GetValueOfMetricType(Metric type)
-        {
-            var metrics = Enum.GetValues<Metric>().ToList();
-            var index = metrics.IndexOf(type);
-            if (index == -1)
-                return Metric.TwoDay;
-            return metrics.ElementAt(index);
-        }
+        //internal static Metric GetValueOfMetricType(Metric type)
+        //{
+        //    var metrics = Enum.GetValues<Metric>().ToList();
+        //    var index = metrics.IndexOf(type);
+        //    if (index == -1)
+        //        return Metric.TwoDay;
+        //    return metrics.ElementAt(index);
+        //}
 
         /// <summary>
         /// Устанавливает значение MetricType по индексу, если возможно.
         /// </summary>
-        internal bool TrySetMetricByIndex(object? index)
-        {
-            if (index == null)
-                return false;
+        //internal bool TrySetMetricByIndex(object? index)
+        //{
+        //    if (index == null)
+        //        return false;
 
-            if (int.TryParse(index.ToString(), out var value))
-            {
-                var availableValues = Enum.GetValues<Metric>();
-                if (availableValues.Length >= value)
-                    return false;
+        //    if (int.TryParse(index.ToString(), out var value))
+        //    {
+        //        var availableValues = Enum.GetValues<Metric>();
+        //        if (availableValues.Length >= value)
+        //            return false;
 
-                MetricType = availableValues[value];
-                return true;
-            }
-            return false;
-        }
+        //        //MetricType = availableValues[value];
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
         /// <summary>
         /// Применяет фильтры к источнику данных Item.
@@ -266,11 +282,14 @@ namespace Warf_MAUI.Shared.Common.Filters
 
             // todo: Здесь можно добавить дополнительную логику фильтрации по значению метрики.
             // Сейчас оба варианта фильтруют по полю ThreeMonthMetric != -1
-            source = MetricType switch
-            {
-                Metric.NinetyDays => source.Where(x => x.DaysTrend != -1),
-                _ => source.Where(x => x.DaysTrend != -1), // Заглушка для "2 дня"
-            };
+            //source = MetricType switch
+            //{
+            //    Metric.NinetyDays => source.Where(x => x.DaysTrend != -1),
+            //    _ => source.Where(x => x.DaysTrend != -1), // Заглушка для "2 дня"
+            //};
+            source = Use90Days
+            ? source.Where(x => x.DaysTrend != -1)
+            : source.Where(x => x.HoursTrend != -1);
 
             return [.. source]; // Преобразует IQueryable в List
         }

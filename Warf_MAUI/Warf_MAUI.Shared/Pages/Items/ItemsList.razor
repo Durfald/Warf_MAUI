@@ -63,15 +63,11 @@
                         </div>
 
                         <div>
-                            <Label For="() => _itemFilter.MetricType" />
-                            <select @onchange="arg => _itemFilter.TrySetMetricByIndex(arg.Value)">
-                                <option value="@ItemFilter.GetValueOfMetricType(ItemFilter.Metric.TwoDay)">
-                                    @ItemFilter.GetNameForMetricType(ItemFilter.Metric.TwoDay)
-                                </option>
-                                <option value="@ItemFilter.GetValueOfMetricType(ItemFilter.Metric.NinetyDays)">
-                                    @ItemFilter.GetNameForMetricType(ItemFilter.Metric.NinetyDays)
-                                </option>
-                            </select>
+                            <Label For="() => _itemFilter.Use90Days" />
+                            <label>
+                                <input type="checkbox" @bind="_itemFilter.Use90Days" />
+                                90 дней (снять — 48 часов)
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -134,7 +130,6 @@
                     </div>
                 </li>
             }
-
         </ul>
     </div>
 </div>
@@ -147,30 +142,31 @@
         // _loadedItems = MockItemList.GenerateDemoItems(50);
         // _ = AddItemsToSearch(_loadedItems);
         // _sortedItems = _loadedItems.ToList(); //копирование для сортировки
-
-        _loadedItems = await UpdateItems();
-        _ = AddItemsToSearch(_loadedItems);
-        _sortedItems = _loadedItems.ToList();
-
+        _ = Task.Run(async() => await FillItems());
     }
-#pragma warning restore CS1998
 
-    private List<Item> _loadedItems = [];
+    // private List<Item> _loadedItems = [];
     private List<Item> _sortedItems = [];
+    private SortedItemsResult _loadedApiItems = new();
 
     #region SearchFields
 
     private ItemFilter _itemFilter = new ItemFilter();
     private CancellationTokenSource _addManyItemsCancellationTokenSource = new();
     private CancellationTokenSource _searchFieldCancellationTokenSource = new();
-    private BM25Searcher<Item> demoItemMB25Searcher = new();
+    private BM25Searcher<Item> _BM25Searcher90 = new();
+    private BM25Searcher<Item> _BM25Searcher48 = new();
 
-    private async Task AddItemsToSearch(IEnumerable<dynamic> items)
+    private async Task AddItemsToSearch(IEnumerable<Item> items90, IEnumerable<Item> items48)
     {
+        _BM25Searcher48.Clear();
+        _BM25Searcher90.Clear();
         await _addManyItemsCancellationTokenSource.CancelAsync();
         _addManyItemsCancellationTokenSource = new();
-        await demoItemMB25Searcher.AddItems(_loadedItems, _addManyItemsCancellationTokenSource.Token);
+        await _BM25Searcher90.AddItems(items90, _addManyItemsCancellationTokenSource.Token);
+        await _BM25Searcher48.AddItems(items48, _addManyItemsCancellationTokenSource.Token);
 
+        _itemFilter.PropertyChanged -= OnFilterPropertyChanged;
         _itemFilter.PropertyChanged += OnFilterPropertyChanged;
     }
 
@@ -180,16 +176,10 @@
         _searchFieldCancellationTokenSource = new();
 
         await Task.Delay(150);
-        if (_searchFieldCancellationTokenSource.IsCancellationRequested)
-            return;
+        if (_searchFieldCancellationTokenSource.IsCancellationRequested) return;
         await Task.Delay(500);
 
-        if (!string.IsNullOrEmpty(query))
-            _sortedItems = await demoItemMB25Searcher.Search(query);
-        else
-            _sortedItems = _loadedItems;
-
-        _sortedItems = _itemFilter.Apply(_sortedItems.AsQueryable()).ToList();
+        await RebuildListsAsync(query);
         await InvokeAsync(StateHasChanged);
     }
 
@@ -198,25 +188,37 @@
         if (args.Value is string query)
         {
             await ApplyFilter(query);
+            _itemFilter.SetNameQuery(query);
         }
     }
 
     #endregion SearchFields
 
-    private async Task<List<Item>> UpdateItems()
+    private async Task LoadItemsFromApi()
     {
-        var itemsresult = await  _apiClient.My.GetSortedItemsAsync();
-        Item[] items = [..itemsresult.Last90Days, ..itemsresult.Last48Hours];
-        return items.ToList();
+        var res = await _apiClient.My.GetSortedItemsAsync();
+        _loadedApiItems = res;
+    }
+
+    private async Task RebuildListsAsync(string query = "")
+    {
+        var baseList = _itemFilter.Use90Days ? _loadedApiItems.Last90Days : _loadedApiItems.Last48Hours;
+
+        List<Item> list;
+        if (!string.IsNullOrEmpty(query))
+            list = _itemFilter.Use90Days ? await _BM25Searcher90.Search(query): await _BM25Searcher48.Search(query);
+        else
+            list = baseList.ToList();
+
+        _sortedItems = _itemFilter.Apply(list.AsQueryable());
     }
 
     private async Task FillItems()
     {
-        _loadedItems.Clear();
-
-        _loadedItems = await UpdateItems();
-        _ = AddItemsToSearch(_loadedItems);
-        _sortedItems = _loadedItems.ToList();
+        await LoadItemsFromApi();
+        await AddItemsToSearch(_loadedApiItems.Last90Days, _loadedApiItems.Last48Hours);
+        await RebuildListsAsync();
+        await InvokeAsync(StateHasChanged);
     }
 
     private void OnFilterPropertyChanged(string query)
