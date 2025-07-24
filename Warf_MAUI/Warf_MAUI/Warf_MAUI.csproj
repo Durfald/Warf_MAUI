@@ -61,6 +61,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Platforms\Windows\WindowsNotifications.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Platforms\Windows\logo.ico">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

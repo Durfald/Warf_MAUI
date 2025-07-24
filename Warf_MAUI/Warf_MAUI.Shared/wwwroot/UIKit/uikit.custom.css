@@ -48,3 +48,70 @@
 .uk-border-rounded-large {
     border-radius: 11px;
 }
+
+.uk-input {
+    background: transparent !important;
+    border-top: 0px;
+    border-right: 0px;
+    border-left: 0px;
+    -moz-appearance: textfield;
+    -webkit-appearance: none;
+}
+
+    .uk-input:focus {
+        background: #ffffff10 !important;
+        color: #ffffffbf;
+    }
+
+
+.uk-select {
+    background: transparent;
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+}
+
+    .uk-select:focus {
+        background: #ffffff10 !important;
+        color: #ffffffbf;
+    }
+/*background: #ffffff10;*/
+.uk-select,
+::picker(select) {
+    appearance: base-select;
+    background: #0e141a !important;
+    outline: none !important;
+}
+
+    .uk-select:focus,
+    ::picker(select) {
+        appearance: base-select;
+        background: #0e141a !important;
+    }
+
+
+        .uk-select,
+        ::picker(select):-moz-range-thumb {
+            color: dodgerblue;
+            background-color: dodgerblue;
+        }
+
+        .uk-select,
+        ::picker(select)::-webkit-scrollbar-track {
+            background: blue;
+            background-color: blue;
+        }
+
+
+/* remove incrementation arrows */
+.uk-input[type=number]::-webkit-outer-spin-button,
+.uk-input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+
+.uk-card-default {
+    background-color: #192228;
+    color: #ffffff;
+}
+

@@ -4,6 +4,7 @@
 @using Warf_MAUI.Shared.Common.Filters
 @using Warf_MAUI.Shared.Common.WebAPI.WebClients
 @using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
+@using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models.Enums
 @using Warf_MAUI.Shared.Components.Elements
 
 @inject CombinedApiClient _apiClient;
@@ -18,7 +19,7 @@
         <div class="uk-flex uk-flex-row">
             <div class="uk-panel-box-primary uk-border-rounded uk-margin-right">
                 <input class="uk-search-field" type="search" placeholder="Поиск..."
-                autocomplete="off" @oninput="OnSearchFieldInput">
+                       autocomplete="off" @oninput="OnSearchFieldInput">
             </div>
             <div class="uk-inline">
 
@@ -79,55 +80,10 @@
 
             @for (int i = 0; i < _sortedItems.Count; i++)
             {
+                @* _content/Warf_MAUI.Shared/svg/ducat_light.svg *@
                 int index = i;
                 <li class="uk-width-1-6 ">
-                    <div class="uk-panel-box-primary uk-border-rounded">
-                        <h3 class="uk-card-title uk-text-center uk-text-top">@_sortedItems[index].Name</h3>
-                        <img class="uk-align-center" src="_content/Warf_MAUI.Shared/svg/ducat_light.svg" alt="Item @i" width="64" height="64">
-                        <div class="uk-margin-left">
-                            <table class="uk-table uk-table-small">
-                                <tbody>
-                                    <tr>
-                                        <td>Цена покупки:</td>
-                                        <td>@_sortedItems[index].BuyPrice</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Цена продажи:</td>
-                                        <td>@_sortedItems[index].SellPrice</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Разница:</td>
-                                        <td>@_sortedItems[index].Spread</td>
-                                    </tr>
-                                    @if (_sortedItems[index].Rank != null)
-                                    {
-                                        <tr>
-                                            <td>Ранг:</td>
-                                            <td>@_sortedItems[index].Rank</td>
-                                        </tr>
-                                    }
-                                    <tr>
-                                        <td>Налог на торговлю:</td>
-                                        <td>@_sortedItems[index].TradingTax</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Тренд цены 90 дней:</td>
-                                        <td>@_sortedItems[index].DaysTrend</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Тренд цены 2 дней:</td>
-                                        <td>@_sortedItems[index].HoursTrend</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                        </div>
-                        <div>
-                            <button class="uk-button uk-button-primary uk-align-center uk-border-rounded-small">
-                                добавить
-                            </button>
-                        </div>
-                    </div>
+                    <Warf_MAUI.Shared.Components.Item.ItemCard Item="_sortedItems[index]" />
                 </li>
             }
         </ul>
@@ -136,13 +92,13 @@
 
 @implements IDisposable
 @code {
-    #pragma warning disable CS1998
+#pragma warning disable CS1998
     protected override async Task OnInitializedAsync()
     {
         // _loadedItems = MockItemList.GenerateDemoItems(50);
         // _ = AddItemsToSearch(_loadedItems);
         // _sortedItems = _loadedItems.ToList(); //копирование для сортировки
-        _ = Task.Run(async() => await FillItems());
+        _ = Task.Run(async () => await FillItems());
     }
 
     // private List<Item> _loadedItems = [];
@@ -156,6 +112,7 @@
     private CancellationTokenSource _searchFieldCancellationTokenSource = new();
     private BM25Searcher<Item> _BM25Searcher90 = new();
     private BM25Searcher<Item> _BM25Searcher48 = new();
+
 
     private async Task AddItemsToSearch(IEnumerable<Item> items90, IEnumerable<Item> items48)
     {
@@ -206,7 +163,7 @@
 
         List<Item> list;
         if (!string.IsNullOrEmpty(query))
-            list = _itemFilter.Use90Days ? await _BM25Searcher90.Search(query): await _BM25Searcher48.Search(query);
+            list = _itemFilter.Use90Days ? await _BM25Searcher90.Search(query) : await _BM25Searcher48.Search(query);
         else
             list = baseList.ToList();
 

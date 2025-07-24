@@ -103,6 +103,15 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Service
 
             //return await resp.Content.ReadFromJsonAsync<List<DucatTrade>>();
         }
+
+        public async Task<ItemShort> GetItemDetailsAsync(string itemId, string language = "ru")
+        {
+            var headers = new Dictionary<string, string> { { "language", language } };
+            var link = $"info/details/{itemId}";
+            var result = await _httpClient.GetAsync<ItemShort>(link, headers: headers);
+            return result.Data!;
+
+        }
     }
 
 }

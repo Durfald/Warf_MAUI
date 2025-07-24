@@ -7,7 +7,7 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
     // Представляет краткую информацию об игровом предмете.
     //depends on your Language header, you could have any other language inside i18n field
     //зависит от вашего заголовка Language, вы можете иметь любой другой язык в поле i18n
-    public class ItemShort
+    public class ItemShort 
     {
         [JsonProperty("id")]
         public string Id { get; set; } = null!; // Unique identifier of the item / Уникальный идентификатор предмета.

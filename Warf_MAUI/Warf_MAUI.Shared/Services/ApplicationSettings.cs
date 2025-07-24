@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Xml;
 using System.Xml.Serialization;
+using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient;
 
 namespace Warf_MAUI.Shared.Services
 {
@@ -176,8 +177,15 @@ namespace Warf_MAUI.Shared.Services
     [XmlType]
     public class NotificationSettings
     {
-        public bool EnableNotificationsThroughWindows { get; set; }
-        public bool EnableSendNotificationsThroughtDiscord { get; set; }
+        public bool EnableSendNotificationsThroughApplication { get; set; }
+
+        public bool EnableSendNotificationsThroughWindows { get; set; }
+
+        public bool EnableSendNotificationsThroughDiscord { get; set; }
+
+        public bool EnableSendNotificationsThroughTelegram { get; set; }
+
+        public bool TelegramNotificationsEnabled { get; }
     }
 
     #endregion SettingsTypes

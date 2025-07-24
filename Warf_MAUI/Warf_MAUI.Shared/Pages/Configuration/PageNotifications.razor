@@ -1,12 +1,86 @@
-﻿@using Warf_MAUI.Shared.Services
-<div class="uk-grid uk-child-width-1-1">
-    <p class="uk-h1 uk-text-success">Ну и чего ты?</p>
-    <span class="uk-text-warning">Иди, иди! Ухади астуда!</span>
-    <span class="uk-text-danger uk-text-lead">Выключай!</span>
+﻿@using Warf_MAUI.Shared.Common.Notifications
+@using Warf_MAUI.Shared.Services
+
+<div class="uk-grid uk-grid-small uk-child-width-1-1" uk-grid>
+    <div>
+        <div class="uk-card uk-card-small uk-card-body">
+            <div class="uk-flex uk-flex-between uk-flex-middle">
+                <p class="uk-margin-remove">Уведомления в приложении</p>
+                <input type="checkbox"
+                       class="uk-checkbox"
+                       @bind-value="Settings.EnableSendNotificationsThroughApplication"
+                       checked="@Settings.EnableSendNotificationsThroughApplication" />
+            </div>
+        </div>
+    </div>
+    @if (OperatingSystem.IsWindows())
+    {
+        <div>
+            <div class="uk-card uk-card-small uk-card-body">
+                <div class="uk-flex uk-flex-between uk-flex-middle">
+                    <p class="uk-margin-remove">Уведомления в Windows</p>
+                    <input type="checkbox" @onchange="EnableSendNotificationsThroughWindows"
+                           class="uk-checkbox" checked="@Settings.EnableSendNotificationsThroughWindows" />
+                </div>
+            </div>
+        </div>
+    }
+
+    <div>
+        <div class="uk-card uk-card-small uk-card-body uk-card-default">
+            <p>Уведомления в Discord</p>
+            <div>
+                @if (Settings.EnableSendNotificationsThroughDiscord)
+                {
+                    <span class="uk-text-success">Подключено</span>
+                }
+                else
+                {
+                    <span class="uk-text-danger">Не подключено</span>
+                }
+            </div>
+
+            <button class="uk-button uk-button-default">Подключить</button>
+        </div>
+    </div>
+
+    <div>
+        <div class="uk-card uk-card-small uk-card-body uk-card-default">
+            <p>Уведомления в Telegram</p>
+            <div>
+                @if (Settings.EnableSendNotificationsThroughTelegram)
+                {
+                    <span class="uk-text-success">Подключено</span>
+                }
+                else
+                {
+                    <span class="uk-text-danger">Не подключено</span>
+                }
+            </div>
+
+            <button class="uk-button uk-button-default">Подключить</button>
+        </div>
+    </div>
 </div>
 
+@inject INotificationController notificationController
 @code {
     [Parameter]
     public required NotificationSettings Settings { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        // Здесь можно добавить логику инициализации, если необходимо
+    }
+    private void EnableSendNotificationsThroughWindows(ChangeEventArgs args)
+    {
+        if (bool.TryParse(args.Value?.ToString(), out bool result))
+            Settings.EnableSendNotificationsThroughWindows = result;
+        else Settings.EnableSendNotificationsThroughWindows = false;
+
+        if (result)
+            notificationController.NotifyWindows("Windows notifications enabled!");
+    }
 }
 

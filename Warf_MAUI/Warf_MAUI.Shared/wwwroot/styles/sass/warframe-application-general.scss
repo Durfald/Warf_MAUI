@@ -40,9 +40,9 @@ pre {
 .wa-search-body {
     padding: 1rem;
 
-    > p{
+    > p {
         font-size: 24px;
-        text-align:center;
+        text-align: center;
     }
 
     > div {
@@ -75,4 +75,38 @@ pre {
 
 .wa-search-body-decorations {
     box-shadow: 1em 1em 3em #000;
+}
+
+
+.wa-expandable-image-container {
+    height: 0px;
+    padding-bottom: 100px;
+}
+
+.wa-expandable-image {
+    object-fit: contain;
+    cursor: pointer;
+    border-image-repeat: space;
+    height: 80px;
+    width: 80px;
+    transition: .2s;
+}
+
+.wa-expandable-image:hover {
+    transform: scale(2.5) translate(0px);
+}
+
+.wa-item-card-flex {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.wa-item-card-flex > div:last-child {
+    margin-top: auto;
+}
+
+.wa-item-card-title {
+    height: 5rem;
+    padding: .4rem;
+    word-break: break-word;
 }

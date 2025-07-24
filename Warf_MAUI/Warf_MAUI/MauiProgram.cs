@@ -11,6 +11,7 @@ using Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient;
 using Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Services;
 using Warf_MAUI.Shared.Services;
 
+
 #if WINDOWS
 using Warf_MAUI.Platforms.Windows;
 #endif
@@ -42,6 +43,7 @@ namespace Warf_MAUI
             builder.Services.AddSingleton<IDataStorage,FileDataStorage>();
             builder.Services.AddSingleton<MemoryCacheService>();
 
+            // TODO: Хасан, это пизда. Нахуя тебе 3 одинаковых клиента? Они чем не отличаются, кроме URL.
             builder.Services.AddSingleton<IHttpClientMy>(provider =>
             {
                 return new RestApiClient("http://37.46.19.255:2530/api/", 0);
