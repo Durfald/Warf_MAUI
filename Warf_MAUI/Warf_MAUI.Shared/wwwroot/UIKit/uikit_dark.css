@@ -9158,7 +9158,7 @@ html[dir="rtl"] .uk-slider > * {
     font: inherit;
     color: #e8f0f7;
     -webkit-appearance: none;
-    width: 120px;
+    width: 100% !important;
     height: 30px;
     padding: 0 0 0 30px;
     border: 1px solid rgba(0,0,0,0);
