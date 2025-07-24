@@ -19,3 +19,12 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
+
+<style>
+    article.full-space.main-content-viewer {
+        flex: 1 1 auto; /* растягиваемся и по ширине, и по высоте */
+        min-width: 0; /* важно для flex, чтобы не ломало переносы */
+        overflow: auto; /* скроллим только контент статьи */
+        box-sizing: border-box;
+    }
+</style>
