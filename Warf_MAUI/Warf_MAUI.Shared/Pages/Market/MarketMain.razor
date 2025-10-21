@@ -1,10 +1,110 @@
 ﻿@page "/Market/MarketMain"
-<div class="uk-panel-box uk-border-rounded">
-    <div class="uk-panel-box-primary uk-border-rounded uk-width-1-3 uk-container-center">
-        <input class="uk-search-field" type="search" placeholder="Поиск..."
+@using Warf_MAUI.Shared.Common.BM25
+@using Warf_MAUI.Shared.Common.WebAPI.WebClients
+@using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
+
+@inject CombinedApiClient _apiClient;
+
+<div class="uk-panel-box uk-border-rounded uk-padding">
+    <div class="uk-panel-box-primary uk-border-rounded uk-width-1-3 uk-container-center uk-position-relative">
+        <input class="uk-search-field uk-width-1-1"
+               type="search"
+               placeholder="Поиск..."
+               @bind="SearchText"
+               @bind:event="oninput"
                autocomplete="off">
+
+        @if (filteredItems.Any())
+        {
+            <div class="uk-panel uk-border-rounded uk-box-shadow-medium uk-background-default uk-position-absolute uk-width-1-1 uk-animation-scale-up uk-transform-origin-top-center" style="z-index: 1000;">
+                <ul class="uk-list uk-margin-remove">
+                    @foreach (var item in filteredItems)
+                    {
+                        <li class="uk-padding-small uk-hover-background-muted"
+                            @onclick="() => SelectItem(item)">
+                            @item.Name
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
     </div>
 </div>
-@code {
 
+<div class="uk-panel-box full-space uk-border-rounded uk-margin-top">
+    <ul class="uk-grid-small uk-grid-match" uk-grid>
+        @foreach (var item in shownItems)
+        {
+            <li class="uk-width-1-6">
+                <span>@item.Name</span>
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    private string searchText = string.Empty;
+    private List<ItemShort> allItems = new();
+    private List<ItemShort> shownItems = new();
+    private List<ItemShort> filteredItems = new();
+
+    private BM25Searcher<ItemShort> _bm25Searcher = new();
+    private CancellationTokenSource _searchFieldCancellationTokenSource = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItemsFromApi();
+        await InitializeSearch();
+    }
+
+    private async Task LoadItemsFromApi()
+    {
+        var res = await _apiClient.My.GetDetailsAsync();
+        allItems = res.ToList();
+    }
+
+    private async Task InitializeSearch()
+    {
+        _bm25Searcher.Clear();
+        await _bm25Searcher.AddItems(allItems);
+    }
+
+    private async Task OnSearchFieldInput(string query)
+    {
+        await _searchFieldCancellationTokenSource.CancelAsync();
+        _searchFieldCancellationTokenSource = new();
+
+        await Task.Delay(150);
+        if (_searchFieldCancellationTokenSource.IsCancellationRequested) return;
+        await Task.Delay(500);
+
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            filteredItems.Clear();
+            await InvokeAsync(StateHasChanged);
+            return;
+        }
+
+
+        var results = await _bm25Searcher.Search(query);
+        filteredItems = results.Take(6).ToList();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private string SearchText
+    {
+        get => searchText;
+        set
+        {
+            searchText = value;
+            _ = OnSearchFieldInput(value);
+        }
+    }
+
+    private void SelectItem(ItemShort item)
+    {
+        searchText = item.Name;
+        filteredItems.Clear();
+        shownItems.Add(item); // показать выбранный
+    }
 }

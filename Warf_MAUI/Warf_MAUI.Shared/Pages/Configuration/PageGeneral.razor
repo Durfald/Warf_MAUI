@@ -35,5 +35,6 @@
     [Parameter]
     public required GeneralSettings Settings { get; set; }
 
-    private CultureInfo[] _cultures = CultureInfo.GetCultures(CultureTypes.NeutralCultures);
+    private CultureInfo[] _cultures = CultureInfo.GetCultures(CultureTypes.NeutralCultures)
+    .Where(c => c.Name == "ru" || c.Name == "en").ToArray();
 }
