@@ -1,7 +1,7 @@
 ﻿using Warf_MAUI.Shared.Common.BM25;
 
 namespace Warf_MAUI.Shared.Common.Mock;
-public class DemoItem : ISearchableItem
+public class DemoItem : IBM25Item
 {
     public string Name { get; init; } = null!;
     public int BuyValue { get; init; }

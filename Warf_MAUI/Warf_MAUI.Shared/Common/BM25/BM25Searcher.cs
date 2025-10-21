@@ -61,7 +61,7 @@ Trie-дерево — для автодополнения.
 
 namespace Warf_MAUI.Shared.Common.BM25;
 
-public class BM25Searcher<T> where T : class, ISearchableItem
+public class BM25Searcher<T> where T : class, IBM25Item
 {
     private readonly Dictionary<int, Dictionary<string, int>> termFrequencies = [];
     private readonly Dictionary<string, List<int>> invertedIndex = []; // Обратный индекс

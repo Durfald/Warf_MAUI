@@ -3,7 +3,7 @@
     /// <summary>
     /// Интерфейс для элементов, которые могут быть поиском.
     /// </summary>
-    public interface ISearchableItem
+    public interface IBM25Item
     {
         /// <summary>
         /// Возвращает имя элемента, используемое для поиска.

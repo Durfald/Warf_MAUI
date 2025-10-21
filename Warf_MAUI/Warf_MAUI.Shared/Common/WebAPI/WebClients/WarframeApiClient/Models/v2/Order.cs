@@ -6,7 +6,7 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Models.v2
 {
     public class Order
     {
-        [JsonProperty("id")]
+        [JsonProperty("Id")]
         public string? Id { get; set; }  // Unique identifier of the order / Уникальный идентификатор ордера
 
         [JsonProperty("type")]

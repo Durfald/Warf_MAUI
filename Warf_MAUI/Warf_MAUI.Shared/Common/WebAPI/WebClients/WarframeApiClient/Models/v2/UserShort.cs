@@ -6,7 +6,7 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Models.v2
 {
     public class UserShort
     {
-        [JsonProperty("id")]
+        [JsonProperty("Id")]
         public string? Id { get; set; }  // Уникальный идентификатор пользователя.
 
         [JsonProperty("ingameName")]

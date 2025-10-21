@@ -1,7 +1,9 @@
 ﻿@page "/Market/MarketMain"
 @using Warf_MAUI.Shared.Common.BM25
+@using Warf_MAUI.Shared.Common.Search.Models
 @using Warf_MAUI.Shared.Common.WebAPI.WebClients
 @using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
+@using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models.Enums
 
 @inject CombinedApiClient _apiClient;
 
@@ -16,13 +18,36 @@
 
         @if (filteredItems.Any())
         {
-            <div class="uk-panel uk-border-rounded uk-box-shadow-medium uk-background-default uk-position-absolute uk-width-1-1 uk-animation-scale-up uk-transform-origin-top-center" style="z-index: 1000;">
-                <ul class="uk-list uk-margin-remove">
+            <div class="uk-panel-box-secondary uk-border-rounded uk-box-shadow-medium
+                uk-position-absolute uk-width-1-1
+                uk-animation-scale-up uk-transform-origin-top-center
+                uk-padding-small" style="z-index: 1000;">
+
+                <ul class="uk-list uk-grid-small uk-child-width-1-2@m uk-child-width-1-1@s uk-grid-match uk-list-divider custom-list" uk-grid>
                     @foreach (var item in filteredItems)
                     {
-                        <li class="uk-padding-small uk-hover-background-muted"
+                        <li class="uk-padding-small uk-border-rounded uk-transition-toggle list-item"
                             @onclick="() => SelectItem(item)">
-                            @item.Name
+
+                            <div class="uk-flex uk-flex-middle">
+                                <img class="uk-border-circle uk-margin-small-right"
+                                     src="@GetItemImageUrl(item)"
+                                     alt="@item.Name" width="48" height="48" />
+
+                                <div class="uk-flex-1">
+                                    <div class="uk-text-bold uk-text-truncate item-name">@item.Name</div>
+
+                                    @if (!string.IsNullOrWhiteSpace(item.Subtype))
+                                    {
+                                        <div class="uk-text-meta">Подтип: @item.Subtype</div>
+                                    }
+
+                                    @if (item.Rank != null)
+                                    {
+                                        <div class="uk-text-muted">Ранг: @item.Rank</div>
+                                    }
+                                </div>
+                            </div>
                         </li>
                     }
                 </ul>
@@ -30,25 +55,69 @@
         }
     </div>
 </div>
+<div class="uk-child-width-small uk-margin-top uk-margin-remove-left uk-padding uk-column-1-2" uk-grid>
+    <div class="uk-panel-box uk-border-rounded">
+        <ul class="uk-grid-small uk-grid-match uk-first-column" uk-grid>
+            @foreach (var item in shownItems)
+            {
+                <li class="uk-width-1-6">
+                    <span>@item.Name</span>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="uk-panel-box uk-border-rounded">
 
-<div class="uk-panel-box full-space uk-border-rounded uk-margin-top">
-    <ul class="uk-grid-small uk-grid-match" uk-grid>
-        @foreach (var item in shownItems)
-        {
-            <li class="uk-width-1-6">
-                <span>@item.Name</span>
-            </li>
-        }
-    </ul>
+    </div>
 </div>
+<style>
+.custom-list {
+    max-height: 60vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #aaa transparent;
+}
 
+    .item-name {
+        white-space: normal; /* разрешаем перенос */
+        word-break: break-word; /* переносим длинные слова */
+        overflow-wrap: anywhere; /* переносим даже без пробелов */
+        line-height: 1.3;
+    }
+
+/* hover эффект для всего li */
+.list-item {
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.list-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+/* убираем стандартные отступы у li */
+.list-item img {
+    flex-shrink: 0;
+}
+
+/* адаптивная высота и прокрутка */
+.custom-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-list::-webkit-scrollbar-thumb {
+    background-color: #aaa;
+    border-radius: 3px;
+}
+</style>
 @code {
     private string searchText = string.Empty;
-    private List<ItemShort> allItems = new();
-    private List<ItemShort> shownItems = new();
-    private List<ItemShort> filteredItems = new();
+    private List<SearchItem> allItems = new();
+    private List<SearchItem> shownItems = new();
+    private List<SearchItem> filteredItems = new();
 
-    private BM25Searcher<ItemShort> _bm25Searcher = new();
+    private BM25Searcher<SearchItem> _bm25Searcher = new();
     private CancellationTokenSource _searchFieldCancellationTokenSource = new();
 
     protected override async Task OnInitializedAsync()
@@ -57,10 +126,78 @@
         await InitializeSearch();
     }
 
+    private string GetItemImageUrl(SearchItem item)
+    {
+        if (item == null)
+            return "_content/Warf_MAUI.Shared/svg/ducat_light.svg"; // Default image if itemShort is null
+        if (item.ImageUrl == null)
+            return "_content/Warf_MAUI.Shared/svg/ducat_light.svg";
+
+        return "https://warframe.market/static/assets/" + item.ImageUrl;
+    }
+
     private async Task LoadItemsFromApi()
     {
         var res = await _apiClient.My.GetDetailsAsync();
-        allItems = res.ToList();
+
+        allItems = ConvertItemsForSearch(res).ToList();
+    }
+
+    private IEnumerable<SearchItem> ConvertItemsForSearch(IEnumerable<ItemShort> items)
+    {
+        var searchItems = new List<SearchItem>();
+        foreach(var i in items)
+        {
+            var existRank = i.MaxRank.HasValue;
+            var existSubtype = i.Subtypes!= null;
+            if(existRank)
+            {
+                var searchItemMaxR = new SearchItem() { 
+                    Id = i.Id,
+                    slug = i.Slug,
+                    Name = i.Name,
+                    ImageUrl = i.I18n.First().Value.Icon,
+                    Rank = i.MaxRank.Value
+                };
+                searchItems.Add(searchItemMaxR);
+
+                var searchItemMinR = new SearchItem(){
+                    Id = i.Id,
+                    slug = i.Slug,
+                    Name = i.Name,
+                    ImageUrl = i.I18n.First().Value.Icon,
+                    Rank = 0
+                };
+                searchItems.Add(searchItemMinR);
+            }
+            else if(existSubtype)
+            {
+                foreach(var subtype in i.Subtypes)
+                {
+                    var searchItem = new SearchItem()
+                    {
+                        Id = i.Id,
+                        slug = i.Slug,
+                        Name = i.Name,
+                        ImageUrl = i.I18n.First().Value.Icon,
+                        Subtype = subtype
+                    };
+                    searchItems.Add(searchItem);
+                }
+            }
+            else
+            {
+                var searchItem = new SearchItem()
+                {
+                    Id = i.Id,
+                    slug = i.Slug,
+                    Name = i.Name,
+                    ImageUrl = i.I18n.First().Value.Icon,
+                };
+                searchItems.Add(searchItem);
+            }
+        }
+        return searchItems;
     }
 
     private async Task InitializeSearch()
@@ -87,7 +224,7 @@
 
 
         var results = await _bm25Searcher.Search(query);
-        filteredItems = results.Take(6).ToList();
+        filteredItems = results.Take(10).ToList();
         await InvokeAsync(StateHasChanged);
     }
 
@@ -101,9 +238,9 @@
         }
     }
 
-    private void SelectItem(ItemShort item)
+    private void SelectItem(SearchItem item)
     {
-        searchText = item.Name;
+        searchText = string.Empty;
         filteredItems.Clear();
         shownItems.Add(item); // показать выбранный
     }

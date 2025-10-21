@@ -8,9 +8,9 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
     // Представляет краткую информацию об игровом предмете.
     //depends on your Language header, you could have any other language inside i18n field
     //зависит от вашего заголовка Language, вы можете иметь любой другой язык в поле i18n
-    public class ItemShort : ISearchableItem
+    public class ItemShort : IBM25Item
     {
-        [JsonProperty("id")]
+        [JsonProperty("Id")]
         public string Id { get; set; } = null!; // Unique identifier of the item / Уникальный идентификатор предмета.
 
         [JsonProperty("Slug")]
@@ -53,7 +53,7 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
         public float? EndoMultiplier { get; set; }  // Endo multiplier for the item / Множитель эндо для предмета.
 
         [JsonProperty("Subtypes")]
-        public object? Subtypes { get; set; }  // Subtypes of the item (if any) / Подтипы предмета (если есть).
+        public string[]? Subtypes { get; set; }  // Subtypes of the item (if any) / Подтипы предмета (если есть).
         public string Name { get =>I18n.First().Value.Name!; init => throw new NotImplementedException(); }
 
         public override string ToString()

@@ -27,7 +27,7 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Models.v1
         [JsonProperty("background")]
         public string? Background { get; set; }
 
-        [JsonProperty("id")]
+        [JsonProperty("Id")]
         public string Id { get; set; } = string.Empty;
 
         [JsonProperty("crossplay")]

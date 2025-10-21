@@ -3,9 +3,9 @@ using Warf_MAUI.Shared.Common.BM25;
 
 namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
 {
-    public class Item : ISearchableItem
+    public class Item : IBM25Item
     {
-        [JsonProperty("id")]
+        [JsonProperty("Id")]
         public string Id { get; set; } = string.Empty;
 
         [JsonProperty("url_name")]
