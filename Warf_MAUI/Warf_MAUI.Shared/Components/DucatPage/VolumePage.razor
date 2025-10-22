@@ -1,0 +1,13 @@
+@using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
+
+<div class="uk-card uk-card-default uk-card-body uk-animation-fade">
+    <h3 class="uk-card-title">Объём сделок</h3>
+    <p>
+        Здесь можно отобразить предложения с самым большим объёмом продаж.
+    </p>
+</div>
+
+@code{
+    [Parameter]
+    public required List<SellerDucatOffer> Offers { get; set; }
+}

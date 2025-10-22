@@ -1,0 +1,36 @@
+﻿@using Warf_MAUI.Shared.Common.Search.Models
+@using Warf_MAUI.Shared.Common.Extensions
+<div class="uk-flex uk-flex-middle">
+    <img class="uk-margin-small-right"
+         src="@GetImage.GetItemImageUrl(Item)"
+         alt="@Item.Name" width="48" height="48" />
+
+    <div class="uk-flex-1">
+        <div class="uk-text-bold uk-text-truncate item-name">@Item.Name</div>
+
+        @if (!string.IsNullOrWhiteSpace(Item.Subtype))
+        {
+            <div class="uk-text-meta">Подтип: @Item.Subtype</div>
+        }
+
+        @if (Item.Rank != null)
+        {
+            <div class="uk-text-muted">Ранг: @Item.Rank</div>
+        }
+    </div>
+</div>
+
+<style>
+.item-name {
+    white-space: normal; /* разрешаем перенос */
+    word-break: break-word; /* переносим длинные слова */
+    overflow-wrap: anywhere; /* переносим даже без пробелов */
+    line-height: 1.3;
+}
+
+</style>
+
+@code {
+    [Parameter]
+    public required SearchItem Item { get; set; }
+}

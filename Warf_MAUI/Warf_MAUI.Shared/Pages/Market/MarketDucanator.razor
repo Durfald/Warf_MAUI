@@ -1,6 +1,51 @@
 ﻿@page "/Market/MarketDucanator"
-<h3>MarketDucanator</h3>
+@using Warf_MAUI.Shared.Common.WebAPI.WebClients
+@using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
+@using Warf_MAUI.Shared.Components.DucatPage
+<div class="uk-panel-box uk-border-rounded uk-padding">
+    <nav class="uk-navbar" uk-navbar>
+        <div class="uk-navbar-left">
+            <ul class="uk-navbar-nav">
+                <li class="@((activeTab == "efficient") ? "uk-active" : "")">
+                    <a @onclick='() => SwitchTab("efficient")'>Эффективные</a>
+                </li>
+                <li class="@((activeTab == "volume") ? "uk-active" : "")">
+                    <a @onclick='() => SwitchTab("volume")'>Объём</a>
+                </li>
+            </ul>
+        </div>
+    </nav> 
+    <div class="uk-margin-top">
+        @if (activeTab == "efficient")
+        {
+            <EfficientPage Offers="bestDucatTradeOffers.BestByEfficiency" />
+        }
+        else if (activeTab == "volume")
+        {
+            <VolumePage Offers="bestDucatTradeOffers.BestByTotalDucats"/>
+        }
+    </div>
+</div>
 
-@code {
+@inject CombinedApiClient _apiClient;
+@code { 
+    private string activeTab = "efficient";
+    private void SwitchTab(string tab)
+    {
+        activeTab = tab;
+    }
+
+    private BestDucatOffersResult bestDucatTradeOffers = new BestDucatOffersResult();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    private async Task LoadItemsFromApi()
+    {
+        var res = await _apiClient.My.GetBestDucatTradesAsync();
+        bestDucatTradeOffers = res;
+    }
 
 }

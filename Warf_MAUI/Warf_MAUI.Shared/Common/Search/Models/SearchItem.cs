@@ -7,7 +7,7 @@ using Warf_MAUI.Shared.Common.BM25;
 
 namespace Warf_MAUI.Shared.Common.Search.Models
 {
-    internal class SearchItem : IBM25Item
+    public class SearchItem : IBM25Item
     {
 
         public string Id { get; set; } = null!;
@@ -16,11 +16,13 @@ namespace Warf_MAUI.Shared.Common.Search.Models
 
         public string Name { get; init; } = null!;
 
-        public string ImageUrl { get; set; } = null!;
+        public string Icon { get; set; } = null!;
+        public string SubIcon { get; set; } = null!;
 
         public int? Rank { get; set; }
 
         public string? Subtype { get; set; }
 
+        public List<string> Tags { get; set; } = new List<string>();
     }
 }

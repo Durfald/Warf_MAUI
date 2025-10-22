@@ -1,11 +1,11 @@
 ﻿@page "/Market/MarketMain"
 @using Warf_MAUI.Shared.Common.BM25
+@using Warf_MAUI.Shared.Common.Extensions
 @using Warf_MAUI.Shared.Common.Search.Models
 @using Warf_MAUI.Shared.Common.WebAPI.WebClients
 @using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
 @using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models.Enums
 
-@inject CombinedApiClient _apiClient;
 
 <div class="uk-panel-box uk-border-rounded uk-padding">
     <div class="uk-panel-box-primary uk-border-rounded uk-width-1-3 uk-container-center uk-position-relative">
@@ -23,31 +23,12 @@
                 uk-animation-scale-up uk-transform-origin-top-center
                 uk-padding-small" style="z-index: 1000;">
 
-                <ul class="uk-list uk-grid-small uk-child-width-1-2@m uk-child-width-1-1@s uk-grid-match uk-list-divider custom-list" uk-grid>
+                <ul class="uk-list uk-grid-small uk-child-width-1-2@m uk-child-width-1-1@s uk-grid-match uk-list-divider custom-list"  uk-grid>
                     @foreach (var item in filteredItems)
                     {
-                        <li class="uk-padding-small uk-border-rounded uk-transition-toggle list-item"
+                        <li class="uk-padding-small uk-transition-toggle list-item"
                             @onclick="() => SelectItem(item)">
-
-                            <div class="uk-flex uk-flex-middle">
-                                <img class="uk-border-circle uk-margin-small-right"
-                                     src="@GetItemImageUrl(item)"
-                                     alt="@item.Name" width="48" height="48" />
-
-                                <div class="uk-flex-1">
-                                    <div class="uk-text-bold uk-text-truncate item-name">@item.Name</div>
-
-                                    @if (!string.IsNullOrWhiteSpace(item.Subtype))
-                                    {
-                                        <div class="uk-text-meta">Подтип: @item.Subtype</div>
-                                    }
-
-                                    @if (item.Rank != null)
-                                    {
-                                        <div class="uk-text-muted">Ранг: @item.Rank</div>
-                                    }
-                                </div>
-                            </div>
+                            <Warf_MAUI.Shared.Components.Item.SearchItemCard Item="item" />
                         </li>
                     }
                 </ul>
@@ -57,19 +38,90 @@
 </div>
 <div class="uk-child-width-small uk-margin-top uk-margin-remove-left uk-padding uk-column-1-2" uk-grid>
     <div class="uk-panel-box uk-border-rounded">
-        <ul class="uk-grid-small uk-grid-match uk-first-column" uk-grid>
-            @foreach (var item in shownItems)
+           @*  @foreach (var item in shownItems)
             {
                 <li class="uk-width-1-6">
                     <span>@item.Name</span>
                 </li>
-            }
-        </ul>
+            } *@
+        <div>
+            <table class="uk-table uk-table-hover uk-table-striped uk-table-condensed uk-table-responsive">
+                <caption>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>
+                            Изображение
+                        </th>
+                        <th>
+                            Название
+                        </th>
+                        <th>
+                            Цена покупки
+                        </th>
+                        <th>
+                            Цена продажи
+                        </th>
+                        <th>
+                            Разница цен
+                        </th>
+                        <th>
+                            Действия
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var Item in shownItems)
+                    {
+                        <tr class="">
+                            <td>
+                                <img class="uk-margin-small-right"
+                                     src="@GetImage.GetItemImageUrl(Item)"
+                                     alt="@Item.Name" width="48" height="48" />
+                            </td>
+                            <td>
+                                <div class="uk-text-bold uk-text-truncate item-name">@Item.Name</div>
+
+                                @if (!string.IsNullOrWhiteSpace(Item.Subtype))
+                                {
+                                    <div class="uk-text-meta">Подтип: @Item.Subtype</div>
+                                }
+
+                                @if (Item.Rank != null)
+                                {
+                                    <div class="uk-text-muted">Ранг: @Item.Rank</div>
+                                }
+                            </td>
+                            <td>
+                                тест цена покупки
+                            </td>
+                            <td>
+                                тест цена продажи
+                            </td>
+                            <td>
+                                тест разница
+                            </td>
+                            <td>
+                                <div>
+                                    <button class="uk-button uk-button-primary uk-button-small uk-margin-small-right">
+                                        Купить
+                                    </button>
+                                    <button class="uk-button uk-button-secondary uk-button-small">
+                                        Продать
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
     <div class="uk-panel-box uk-border-rounded">
 
     </div>
 </div>
+
 <style>
 .custom-list {
     max-height: 60vh;
@@ -78,17 +130,11 @@
     scrollbar-color: #aaa transparent;
 }
 
-    .item-name {
-        white-space: normal; /* разрешаем перенос */
-        word-break: break-word; /* переносим длинные слова */
-        overflow-wrap: anywhere; /* переносим даже без пробелов */
-        line-height: 1.3;
-    }
-
 /* hover эффект для всего li */
 .list-item {
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
+    border-top: 0px !important;
 }
 
 .list-item:hover {
@@ -110,7 +156,14 @@
     background-color: #aaa;
     border-radius: 3px;
 }
+
+.border-remove {
+
+}
+
 </style>
+
+@inject CombinedApiClient _apiClient;
 @code {
     private string searchText = string.Empty;
     private List<SearchItem> allItems = new();
@@ -122,18 +175,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadItemsFromApi();
-        await InitializeSearch();
+        _ = Task.Run(async () => await Init());
     }
 
-    private string GetItemImageUrl(SearchItem item)
+    private async Task Init()
     {
-        if (item == null)
-            return "_content/Warf_MAUI.Shared/svg/ducat_light.svg"; // Default image if itemShort is null
-        if (item.ImageUrl == null)
-            return "_content/Warf_MAUI.Shared/svg/ducat_light.svg";
-
-        return "https://warframe.market/static/assets/" + item.ImageUrl;
+        await LoadItemsFromApi();
+        await InitializeSearch();
     }
 
     private async Task LoadItemsFromApi()
@@ -156,8 +204,10 @@
                     Id = i.Id,
                     slug = i.Slug,
                     Name = i.Name,
-                    ImageUrl = i.I18n.First().Value.Icon,
-                    Rank = i.MaxRank.Value
+                    Icon = i.I18n.First().Value.Icon!,
+                    Rank = i.MaxRank!.Value,
+                    Tags = i.Tags!,
+                    SubIcon = i.I18n.First().Value.SubIcon!
                 };
                 searchItems.Add(searchItemMaxR);
 
@@ -165,22 +215,26 @@
                     Id = i.Id,
                     slug = i.Slug,
                     Name = i.Name,
-                    ImageUrl = i.I18n.First().Value.Icon,
-                    Rank = 0
+                    Icon = i.I18n.First().Value.Icon!,
+                    Rank = 0,
+                    Tags = i.Tags!,
+                    SubIcon = i.I18n.First().Value.SubIcon!
                 };
                 searchItems.Add(searchItemMinR);
             }
             else if(existSubtype)
             {
-                foreach(var subtype in i.Subtypes)
+                foreach(var subtype in i.Subtypes!)
                 {
                     var searchItem = new SearchItem()
                     {
                         Id = i.Id,
                         slug = i.Slug,
                         Name = i.Name,
-                        ImageUrl = i.I18n.First().Value.Icon,
-                        Subtype = subtype
+                        Icon = i.I18n.First().Value.Icon!,
+                        Subtype = subtype,
+                        Tags = i.Tags!,
+                        SubIcon = i.I18n.First().Value.SubIcon!
                     };
                     searchItems.Add(searchItem);
                 }
@@ -192,7 +246,9 @@
                     Id = i.Id,
                     slug = i.Slug,
                     Name = i.Name,
-                    ImageUrl = i.I18n.First().Value.Icon,
+                    Icon = i.I18n.First().Value.Icon!,
+                    Tags = i.Tags!,
+                    SubIcon = i.I18n.First().Value.SubIcon!
                 };
                 searchItems.Add(searchItem);
             }

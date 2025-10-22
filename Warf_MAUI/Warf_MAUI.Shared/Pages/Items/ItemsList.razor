@@ -79,7 +79,7 @@
                 @* _content/Warf_MAUI.Shared/svg/ducat_light.svg *@
                 int index = i;
                 <li class="uk-width-1-6 ">
-                    <Warf_MAUI.Shared.Components.Item.ItemCard Item="_sortedItems[index]" />
+                    <Warf_MAUI.Shared.Components.Item.ItemCard Item="_sortedItems[index]" @key="_sortedItems[index].Id" />
                 </li>
             }
         </ul>

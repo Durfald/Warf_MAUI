@@ -1,4 +1,5 @@
-﻿@using Warf_MAUI.Shared.Common.WebAPI.WebClients
+﻿@using Warf_MAUI.Shared.Common.Extensions
+@using Warf_MAUI.Shared.Common.WebAPI.WebClients
 @using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
 @using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models.Enums
 
@@ -7,7 +8,7 @@
     <div>
         <h4 class="uk-card-title uk-text-center uk-text-top wa-item-card-title">@Item.Name</h4>
         <div class="wa-expandable-image-container">
-            <img class="uk-align-center wa-expandable-image" src="@GetItemImageUrl()" alt="Item" width="64" height="64" />
+            <img class="uk-align-center wa-expandable-image" src="@GetImage.GetItemImageUrl(itemShort)" alt="Item" width="64" height="64" />
         </div>
         <div class="uk-margin-left">
             <table class="uk-table uk-table-small">
@@ -69,17 +70,7 @@
     private async Task LoadItemImageAsync()
     {
         itemShort = await _apiClient.My.GetItemDetailsAsync(Item.Id, "ru");
-        Console.WriteLine(itemShort.I18n[Language.Russian].Icon);
+        Console.WriteLine(itemShort.I18n.First().Value.Icon);
         await InvokeAsync(StateHasChanged);
-    }
-
-    private string GetItemImageUrl()
-    {
-        if (itemShort == null)
-            return "_content/Warf_MAUI.Shared/svg/ducat_light.svg"; // Default image if itemShort is null
-        if (itemShort.I18n[Language.Russian].Icon == null)
-            return "_content/Warf_MAUI.Shared/svg/ducat_light.svg";
-
-        return "https://warframe.market/static/assets/" + itemShort.I18n[Language.Russian].Icon;
     }
 }

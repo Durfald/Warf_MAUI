@@ -1,0 +1,12 @@
+@using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
+<div class="uk-card uk-card-default uk-card-body uk-animation-fade">
+    <h3 class="uk-card-title">Эффективные сделки</h3>
+    <p>
+        Здесь будет список самых эффективных предложений по дукатам.
+    </p>
+</div>
+
+@code{
+    [Parameter]
+    public required List<SellerDucatOffer> Offers { get; set; }
+}

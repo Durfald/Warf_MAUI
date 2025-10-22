@@ -72,6 +72,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\Warf_MAUI.Shared\Pages\Market\Component.razor" Link="Component.razor" />
+    <None Include="..\Warf_MAUI.Shared\Pages\Market\EfficientPage.razor" Link="EfficientPage.razor" />
+    <None Include="..\Warf_MAUI.Shared\Pages\Market\VolumePage.razor" Link="VolumePage.razor" />
     <None Include="..\Warf_MAUI.Shared\wwwroot\logo.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
