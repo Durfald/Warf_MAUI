@@ -1,4 +1,5 @@
-﻿using Warf_MAUI.Shared.Services;
+﻿using Microsoft.JSInterop;
+using Warf_MAUI.Shared.Services;
 namespace Warf_MAUI.Shared.Common.Notifications
 {
     /// <summary>
@@ -13,7 +14,7 @@ namespace Warf_MAUI.Shared.Common.Notifications
     {
         protected override Task NotifyApplicationAsync(string message)
         {
-            return base.NotifyApplicationAsync(message);
+            return base.NotifyDiscordAsync(message);
         }
 
         protected override Task NotifyDiscordAsync(string message)

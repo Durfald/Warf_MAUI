@@ -1,6 +1,8 @@
-﻿using Microsoft.Maui.LifecycleEvents;
-using Warf_MAUI.Shared.Services;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
+using Microsoft.Maui.LifecycleEvents;
 using Warf_MAUI.Shared.Common.Notifications;
+using Warf_MAUI.Shared.Services;
 
 namespace Warf_MAUI.Platforms.Windows
 {
@@ -33,7 +35,7 @@ namespace Warf_MAUI.Platforms.Windows
                                 default:
                                     throw new NotImplementedException(
                                         "WindowsNotificationContext.ContificationContentType is not " +
-                                        "implemented for this ContentType of notification: " + 
+                                        "implemented for this ContentType of notification: " +
                                         Enum.GetName(content.ContentType));
 
                             }
