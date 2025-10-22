@@ -7,24 +7,11 @@
             <div class="uk-flex uk-flex-between uk-flex-middle">
                 <p class="uk-margin-remove">Уведомления в приложении</p>
                 <input type="checkbox"
-                       class="uk-checkbox"
-                       @bind-value="Settings.EnableSendNotificationsThroughApplication"
+                       class="uk-checkbox" @onchange="EnableSendNotificationsThroughApplication"
                        checked="@Settings.EnableSendNotificationsThroughApplication" />
             </div>
         </div>
     </div>
-    @if (OperatingSystem.IsWindows())
-    {
-        <div>
-            <div class="uk-card uk-card-small uk-card-body">
-                <div class="uk-flex uk-flex-between uk-flex-middle">
-                    <p class="uk-margin-remove">Уведомления в Windows</p>
-                    <input type="checkbox" @onchange="EnableSendNotificationsThroughWindows"
-                           class="uk-checkbox" checked="@Settings.EnableSendNotificationsThroughWindows" />
-                </div>
-            </div>
-        </div>
-    }
 
     <div>
         <div class="uk-card uk-card-small uk-card-body uk-card-default">
@@ -64,6 +51,7 @@
 </div>
 
 @inject INotificationController notificationController
+@inject IJSRuntime jsRuntime
 @code {
     [Parameter]
     public required NotificationSettings Settings { get; set; }
@@ -81,6 +69,16 @@
 
         if (result)
             notificationController.NotifyWindows("Windows notifications enabled!");
+    }
+
+    private void EnableSendNotificationsThroughApplication(ChangeEventArgs args)
+    {
+        if (bool.TryParse(args.Value?.ToString(), out bool result))
+            Settings.EnableSendNotificationsThroughApplication = result;
+        else Settings.EnableSendNotificationsThroughApplication = false;
+
+        if (result)
+            notificationController.NotifyApplication("Application notifications enabled!", jsRuntime);
     }
 }
 

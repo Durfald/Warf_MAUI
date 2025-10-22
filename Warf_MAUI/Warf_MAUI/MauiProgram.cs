@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 using Warf_MAUI.Services;
+using Warf_MAUI.Shared.Common.Notifications;
 using Warf_MAUI.Shared.Common.WebAPI.Interfaces;
 using Warf_MAUI.Shared.Common.WebAPI.Storage.FileStorage;
 using Warf_MAUI.Shared.Common.WebAPI.Storage.MemoryStorage;
@@ -40,7 +42,7 @@ namespace Warf_MAUI
                 overrides.DoBeFurry = true;
             }));
 
-            builder.Services.AddSingleton<IDataStorage,FileDataStorage>();
+            builder.Services.AddSingleton<IDataStorage, FileDataStorage>();
             builder.Services.AddSingleton<MemoryCacheService>();
 
             // TODO: Хасан, это пизда. Нахуя тебе 3 одинаковых клиента? Они чем не отличаются, кроме URL.
@@ -51,10 +53,18 @@ namespace Warf_MAUI
             builder.Services.AddSingleton<IHttpClientV1>(provider =>
             {
                 return new RestApiClient("https://api.warframe.market/v1/");
-            }); 
+            });
             builder.Services.AddSingleton<IHttpClientV2>(provider =>
             {
                 return new RestApiClient("https://api.warframe.market/v2/");
+            });
+
+            builder.Services.AddSingleton<INotificationController>(builder =>
+            {
+                var settings = builder.GetService<ApplicationSettings>();
+                if (settings != null)
+                    return new NotificationController(settings);
+                throw new NotImplementedException();
             });
 
             builder.Services.AddSingleton<IInfoService, InfoService>();

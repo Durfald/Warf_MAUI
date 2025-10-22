@@ -1,15 +1,16 @@
-﻿using Warf_MAUI.Shared.Services;
+﻿using Microsoft.JSInterop;
+using Warf_MAUI.Shared.Services;
 
 namespace Warf_MAUI.Shared.Common.Notifications
 {
     public abstract class NotificationControllerBase(ApplicationSettings applicationSettings) : INotificationController
     {
-        public void NofityAll(string message)
+        public void NofityAll(string message, IJSRuntime runtime)
         {
             NotifyDiscord(message);
             NotifyTelegram(message);
             NotifyWindows(message);
-            NotifyApplication(message);
+            NotifyApplication(message, runtime);
         }
 
         public void NotifyDiscord(string message)
@@ -36,17 +37,17 @@ namespace Warf_MAUI.Shared.Common.Notifications
             Task.Run(() => NotifyWindowsAsync(message));
         }
 
-        public void NotifyApplication(string message)
+        public void NotifyApplication(string message, IJSRuntime runtime)
         {
             if (!applicationSettings.Notifications.EnableSendNotificationsThroughApplication)
                 return;
 
-            Task.Run(() => NotifyApplicationAsync(message));
+            runtime.InvokeVoidAsync("UIkit.notification", message);
         }
 
 
         #region Overridable methods
-        
+
         protected virtual async Task NotifyDiscordAsync(string message)
         {
             await Task.Delay(1);
@@ -58,11 +59,6 @@ namespace Warf_MAUI.Shared.Common.Notifications
         }
 
         protected virtual async Task NotifyWindowsAsync(string message)
-        {
-            await Task.Delay(1);
-        }
-
-        protected virtual async Task NotifyApplicationAsync(string message)
         {
             await Task.Delay(1);
         }
