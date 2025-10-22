@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
+
     <link rel="stylesheet" href="Warf_MAUI.Web.styles.css" />
     <link rel="stylesheet" href="Warf_MAUI.Web.Client/mother.css" />
     <link rel="stylesheet" href="_content/Warf_MAUI.Shared/app.css" />
@@ -13,15 +14,22 @@
     <link rel="stylesheet" href="_content/Warf_MAUI.Shared/UIKit/uikit_dark.css" />
     <link rel="stylesheet" href="_content/Warf_MAUI.Shared/UIKit/uikit.custom.css" />
     <link rel="stylesheet" href="_content/Warf_MAUI.Shared/styles/css/warframe-application-general.css" />
+
     <HeadOutlet @rendermode="InteractiveAuto" />
 </head>
 
 <body>
     <Routes @rendermode="InteractiveAuto" />
+
     <script src="https://kit.fontawesome.com/3d8b83fe50.js" crossorigin="anonymous"></script>
     <script src="_framework/blazor.web.js"></script>
+
+    <!-- UIkit Core -->
     <script src="_content/Warf_MAUI.Shared/UIKit/uikit.min.js"></script>
     <script src="_content/Warf_MAUI.Shared/UIKit/uikit-icons.min.js"></script>
+
+    <!-- Custom Helper (должен идти ПОСЛЕ UIkit) -->
+    <script src="_content/Warf_MAUI.Shared/UIKit/uikit-helper.js"></script>
 </body>
 
 </html>
