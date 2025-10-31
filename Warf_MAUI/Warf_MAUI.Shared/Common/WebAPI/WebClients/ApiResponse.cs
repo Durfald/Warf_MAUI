@@ -7,17 +7,17 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClient
         public T? Data { get; set; }
         public CookieCollection Cookies { get; set; } = new CookieCollection();
         public HttpStatusCode StatusCode { get; set; }
+        public Dictionary<string, string> Headers { get; set; } = [];
         public string? RawContent { get; set; }
         public string? ErrorMessage { get; set; }
-        public bool IsSuccess => (int)StatusCode >= 200 && (int)StatusCode < 300 && Data != null;
     }
 
     public class ApiResponse
     {
         public CookieCollection Cookies { get; set; } = new CookieCollection();
         public HttpStatusCode StatusCode { get; set; }
+        public Dictionary<string, string> Headers { get; set; } = [];
         public string? RawContent { get; set; }
         public string? ErrorMessage { get; set; }
-        public bool IsSuccess => (int)StatusCode >= 200 && (int)StatusCode < 300;
     }
 }

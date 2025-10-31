@@ -23,7 +23,7 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Services
         {
             var csrfToken = await GetCSRFTokenAsync();
 
-            var resp = await _httpClient.PostAsync<User>("auth/signin",
+            var resp = await _httpClient.PostAsync <RootPayload<UserPayload>>("auth/signin",
                 headers: new Dictionary<string, string>() { { "Authorization", $"Bearer {csrfToken}" } },
                 body: new
                 {
@@ -32,7 +32,13 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Services
                     email,
                     device_id = "pc"
                 });
-            return resp.Data!;
+            //using var doc = JsonDocument.Parse(resp.RawContent!);
+            //var q = doc.RootElement.GetProperty("payload").GetProperty("user");
+            //var raw = q.GetRawText();
+            //var w = JsonSerializer.Deserialize<User>(raw);
+            var user = resp.Data!.Payload.User;
+            user.JwtToken = resp.Headers!["Authorization"].Split(' ').Last();
+            return user;
         }
 
         #endregion

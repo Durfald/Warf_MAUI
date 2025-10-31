@@ -9,12 +9,10 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Services
     public class OrderService : IOrderService
     {
         private readonly IHttpClientV2 _httpClient_v2;
-        private readonly ILogger<OrderService> _logger;
 
-        public OrderService(IHttpClientV2 httpClient_v2, ILogger<OrderService> logger)
+        public OrderService(IHttpClientV2 httpClient_v2)
         {
             _httpClient_v2 = httpClient_v2;
-            _logger = logger;
         }
 
         public async Task<OrderWithUser[]> GetOrdersAsync(OrderFilter orderFilter)
@@ -32,13 +30,13 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Services
                 { "Crossplay", "true" }
             };
 
-            _logger.LogInformation("Fetching orders for item: {Slug}, Language: {Language}, Platform: {Platform}",
-                orderFilter.Slug, language, platform);
+            //_logger.LogInformation("Fetching orders for item: {Slug}, Language: {Language}, Platform: {Platform}",
+            //    orderFilter.Slug, language, platform);
 
-            var res = await _httpClient_v2.GetAsync<OrderWithUser[]>($"orders/item/{orderFilter.Slug}", headers: headers);
+            var res = await _httpClient_v2.GetAsync<Apiv2Response<OrderWithUser[]>>($"orders/item/{orderFilter.Slug}", headers: headers);
 
-            _logger.LogInformation("Successfully retrieved {Count} orders for item: {Slug}", res.Data!.Length, orderFilter.Slug);
-            return res.Data;
+            //_logger.LogInformation("Successfully retrieved {Count} orders for item: {Slug}", res.Data!.Length, orderFilter.Slug);
+            return res.Data!.Data!;
         }
 
         public async Task<Order[]> GetUserOrdersByUserIdAsync(string userId)
@@ -46,8 +44,8 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Services
             if (string.IsNullOrEmpty(userId))
                 throw new ArgumentNullException("userId");
 
-            var res = await _httpClient_v2.GetAsync<Order[]>($"orders/userId/{userId}");
-            return res.Data!;
+            var res = await _httpClient_v2.GetAsync<Apiv2Response<Order[]>>($"orders/userId/{userId}");
+            return res.Data!.Data!;
         }
 
         public async Task<Order[]> GetUserOrdersBySlugAsync(string slug)
@@ -55,30 +53,31 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Services
             if (string.IsNullOrEmpty(slug))
                 throw new ArgumentNullException("slug");
 
-            var res = await _httpClient_v2.GetAsync<Order[]>($"orders/user/{slug}");
-            return res.Data!;
+            var res = await _httpClient_v2.GetAsync<Apiv2Response<Order[]>>($"orders/user/{slug}");
+            return res.Data!.Data!;
         }
 
         /// <summary>
         /// 🔒
         /// </summary>
         /// <returns></returns>
-        public async Task<Order[]> GetMyOrdersAsync(string JWT)
+        public async Task<Order[]> GetMyOrdersAsync(string jwt)
         {
-            if (string.IsNullOrEmpty(JWT))
-                throw new ArgumentNullException(nameof(JWT));
+            if (string.IsNullOrEmpty(jwt))
+                throw new ArgumentNullException(nameof(jwt));
+            var headers = new Dictionary<string, string>();
+            headers.Add("Authorization", $"Bearer {jwt}");
+            var response = await _httpClient_v2.GetAsync<Apiv2Response<Order[]>>($"orders/my", headers: headers );
 
-            var response = await _httpClient_v2.GetAsync<Order[]>($"orders/my", cookies: new() { { "", "" } });
-
-            return response.Data!;
+            return response.Data!.Data!;
         }
 
         public async Task<OrderWithUser> GetOrderInfoAsync(string id)
         {
-            var response = await _httpClient_v2.GetAsync<OrderWithUser>(
+            var response = await _httpClient_v2.GetAsync<Apiv2Response<OrderWithUser>>(
                $"order/{id}");
 
-            return response.Data!;
+            return response.Data!.Data!;
         }
 
         /// <summary>
@@ -108,8 +107,14 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Services
             string? subtype,
             int? amberStars,
             int? cyanStars,
+            string jwt,
             bool visible = true)
         {
+            if (string.IsNullOrEmpty(jwt))
+                throw new ArgumentNullException(nameof(jwt));
+            var headers = new Dictionary<string, string>();
+            headers.Add("Authorization", $"Bearer {jwt}");
+
             var body = new PostOrderRequest
             {
                 ItemId = ItemId,
@@ -125,9 +130,9 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Services
                 CyanStars = cyanStars
             };
 
-            var response = await _httpClient_v2.PostAsync<Order>($"order", body: body);
+            var response = await _httpClient_v2.PostAsync<Apiv2Response<Order>>($"order", body: body, headers: headers);
 
-            return response.Data!;
+            return response.Data!.Data!;
         }
 
         /// <summary>
@@ -136,11 +141,15 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Services
         /// <param name="body">Тело запроса, содержащее детали заказа.</param>
         /// <returns>Асинхронно возвращает созданный объект заказа <see cref="Order"/>.</returns>
         /// <exception cref="Exception">Если ответ не содержит данных.</exception>
-        public async Task<Order> PostOrderAsync(PostOrderRequest body)
+        public async Task<Order> PostOrderAsync(PostOrderRequest body, string jwt)
         {
-            var response = await _httpClient_v2.PostAsync<Order>($"order", body: body);
+            if (string.IsNullOrEmpty(jwt))
+                throw new ArgumentNullException(nameof(jwt));
+            var headers = new Dictionary<string, string>();
+            headers.Add("Authorization", $"Bearer {jwt}");
 
-            return response.Data!;
+            var response = await _httpClient_v2.PostAsync<Apiv2Response<Order>>($"order", body: body, headers: headers);
+            return response.Data!.Data!;
         }
 
         /// <summary>
@@ -157,14 +166,19 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Services
         /// <exception cref="Exception">
         /// Генерируется, если API вернул пустой ответ или не удалось получить обновлённый ордер.
         /// </exception>
-        public async Task<Order> UpdateOrderAsync(string id, PatchOrderRequest body)
+        public async Task<Order> UpdateOrderAsync(string id, PatchOrderRequest body, string jwt)
         {
             if (string.IsNullOrEmpty(id))
                 throw new ArgumentNullException("slug");
 
-            var response = await _httpClient_v2.PatchAsync<Order>($"order/{id}", body: body);
+            if (string.IsNullOrEmpty(jwt))
+                throw new ArgumentNullException(nameof(jwt));
+            var headers = new Dictionary<string, string>();
+            headers.Add("Authorization", $"Bearer {jwt}");
 
-            return response.Data!;
+            var response = await _httpClient_v2.PatchAsync<Apiv2Response<Order>>($"order/{id}", body: body, headers: headers);
+
+            return response.Data!.Data!;
         }
 
         /// <summary>
@@ -177,13 +191,17 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Services
         /// <exception cref="ArgumentNullException">
         /// Генерируется, если параметр <paramref name="id"/> равен <c>null</c> или пустой строке.
         /// </exception>
-        public async Task<bool> DeleteOrderAsync(string id)
+        public async Task<bool> DeleteOrderAsync(string id, string jwt)
         {
 
             if (string.IsNullOrEmpty(id))
                 throw new ArgumentNullException("slug");
 
-            var status = await _httpClient_v2.DeleteAsync($"order/{id}");
+            if (string.IsNullOrEmpty(jwt))
+                throw new ArgumentNullException(nameof(jwt));
+            var headers = new Dictionary<string, string>();
+            headers.Add("Authorization", $"Bearer {jwt}");
+            var status = await _httpClient_v2.DeleteAsync($"order/{id}", headers: headers);
 
             return status;
         }

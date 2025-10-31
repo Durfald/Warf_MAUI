@@ -193,7 +193,7 @@ namespace Warf_MAUI.Shared.Common.WebAPI.Storage.MemoryStorage
         /// <summary>
         /// Добавить или обновить значение по ключу внутри словаря, хранящегося в кэше.
         /// </summary>
-        public void AddOrUpdateInDictionary<TKey, TValue>(string cacheKey, TKey itemKey, TValue itemValue)
+        public void AddOrUpdateInDictionary<TKey, TValue>(string cacheKey, TKey itemKey, TValue itemValue) where TKey : notnull
         {
             var dict = Get<Dictionary<TKey, TValue>>(cacheKey);
             if (dict == null)
@@ -209,7 +209,7 @@ namespace Warf_MAUI.Shared.Common.WebAPI.Storage.MemoryStorage
         /// <summary>
         /// Получить значение из словаря в кэше по ключу словаря.
         /// </summary>
-        public TValue? GetFromDictionary<TKey, TValue>(string cacheKey, TKey itemKey)
+        public TValue? GetFromDictionary<TKey, TValue>(string cacheKey, TKey itemKey) where TKey : notnull
         {
             var dict = Get<Dictionary<TKey, TValue>>(cacheKey);
             if (dict != null && dict.TryGetValue(itemKey, out var value))
@@ -220,6 +220,14 @@ namespace Warf_MAUI.Shared.Common.WebAPI.Storage.MemoryStorage
 
             _logger?.LogDebug($"Dictionary[{cacheKey}][{itemKey}] MISS");
             return default;
+        }
+
+        public Dictionary<TKey, Tvalue>? GetDictionary<TKey, Tvalue>(string cacheKey) where TKey : notnull
+        {
+            var dict = Get<Dictionary<TKey, Tvalue>>(cacheKey);
+            if(dict != null)
+                return dict;
+            return null;
         }
 
         #endregion

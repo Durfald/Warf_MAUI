@@ -45,7 +45,7 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClient
         private RestRequest PrepareRequest(string endpoint, Method method, object? body, Dictionary<string, string>? headers, Dictionary<string, string>? queryParams, Dictionary<string, string>? cookies)
         {
             var request = new RestRequest(endpoint, method);
-            if (body != null) request.AddJsonBody(body);
+            if (body != null) request.AddJsonBody(JsonConvert.SerializeObject(body, Formatting.Indented));
             if (cookies != null) foreach (var c in cookies) request.AddCookie(c.Key, c.Value, "/", "warframe.market");
             if (headers != null) foreach (var h in headers) request.AddHeader(h.Key, h.Value);
             if (queryParams != null) foreach (var q in queryParams) request.AddQueryParameter(q.Key, q.Value);
@@ -62,7 +62,8 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClient
             {
                 StatusCode = response.StatusCode,
                 Cookies = response.Cookies ?? new CookieCollection(),
-                RawContent = response.Content
+                RawContent = response.Content,
+                Headers = response.Headers!.ToDictionary(h => h.Name, h => h.Value?.ToString() ?? string.Empty)
             };
 
             if (response.StatusCode != HttpStatusCode.OK && attempt < maxAttempts)
@@ -101,7 +102,8 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClient
             {
                 StatusCode = response.StatusCode,
                 Cookies = response.Cookies ?? new CookieCollection(),
-                RawContent = response.Content
+                RawContent = response.Content,
+                Headers = response.Headers!.ToDictionary(h => h.Name, h => h.Value?.ToString() ?? string.Empty)
             };
 
             if (response.StatusCode != HttpStatusCode.OK && attempt < maxAttempts)

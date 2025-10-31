@@ -1,10 +1,16 @@
 ﻿@page "/Market/MarketMain"
+@using System.Collections.Concurrent
+@using ApiServerWarframe.Services.Storage.MemoryStorage
 @using Warf_MAUI.Shared.Common.BM25
 @using Warf_MAUI.Shared.Common.Extensions
+@using Warf_MAUI.Shared.Common.Models
+@using Warf_MAUI.Shared.Common.Notifications
 @using Warf_MAUI.Shared.Common.Search.Models
+@using Warf_MAUI.Shared.Common.WebAPI.Storage.MemoryStorage
 @using Warf_MAUI.Shared.Common.WebAPI.WebClients
 @using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models
 @using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Models.Enums
+@using Warf_MAUI.Shared.Services.Warf_MAUI.Services
 
 
 <div class="uk-panel-box uk-border-rounded uk-padding">
@@ -37,13 +43,9 @@
     </div>
 </div>
 <div class="uk-child-width-small uk-margin-top uk-margin-remove-left uk-padding uk-column-1-2" uk-grid>
+
+    @* сюда те что на покупку *@
     <div class="uk-panel-box uk-border-rounded">
-           @*  @foreach (var item in shownItems)
-            {
-                <li class="uk-width-1-6">
-                    <span>@item.Name</span>
-                </li>
-            } *@
         <div>
             <table class="uk-table uk-table-hover uk-table-striped uk-table-condensed uk-table-responsive">
                 <caption>
@@ -104,16 +106,12 @@
                             <td>
                                 <div>
                                     <button class="uk-button uk-button-primary uk-button-small uk-margin-small-right">
-                                        Купить
+                                        Купил
                                     </button>
-                                    <button class="uk-button uk-button-secondary uk-button-small">
-                                        Продать
+                                    <button class="uk-button uk-button-secondary uk-button-small" @onclick="() => RemoveItemFromBuyList(Item)">
+                                        Удалить
                                     </button>
                                 </div>
-                            </td>
-                            @* временное тестовое решение *@
-                            <td>
-                                <button class="uk-button uk-button-default demo" type="button" onclick="UIkit.notification({message: 'Message',timeout: 0,close: false})">With icon</button>
                             </td>
                         </tr>
                     }
@@ -121,6 +119,7 @@
             </table>
         </div>
     </div>
+    @* сюда те что на продажу *@
     <div class="uk-panel-box uk-border-rounded">
 
     </div>
@@ -167,11 +166,16 @@
 
 </style>
 
+@inject MemoryCacheService _memory;
 @inject CombinedApiClient _apiClient;
+@inject WarframeMarketService MarketService;
+@inject INotificationController notifyController;
+@inject IJSRuntime jsRuntime;
+
 @code {
     private string searchText = string.Empty;
     private List<SearchItem> allItems = new();
-    private List<SearchItem> shownItems = new();
+    private List<MarketItem> shownItems = new();
     private List<SearchItem> filteredItems = new();
 
     private BM25Searcher<SearchItem> _bm25Searcher = new();
@@ -184,79 +188,68 @@
 
     private async Task Init()
     {
+        await LoadOrders();
         await LoadItemsFromApi();
         await InitializeSearch();
+    }
+
+    private async Task LoadOrders()
+    {
+        var orders = _memory.GetDictionary<string,SearchItem>(MemoryNameProvider.BuyOrders);
+        if (orders != null && orders.Count > 0)
+        {
+            shownItems.AddRange(orders.Values);
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private async Task LoadItemsFromApi()
     {
         var res = await _apiClient.My.GetDetailsAsync();
 
-        allItems = ConvertItemsForSearch(res).ToList();
+        var converted = ConvertItemsForSearch(res).ToList();
+        allItems = converted;
+
+    }
+
+    private void Notify(string message, NotifyType type = NotifyType.primary, NotifyPosition pos = NotifyPosition.TopRight, int timeout = 500)
+    {
+        notifyController.NotifyApplication(jsRuntime, message, type, pos, timeout);
     }
 
     private IEnumerable<SearchItem> ConvertItemsForSearch(IEnumerable<ItemShort> items)
     {
-        var searchItems = new List<SearchItem>();
-        foreach(var i in items)
+        var searchItems = new ConcurrentBag<SearchItem>();
+
+        // Partitioner разбивает данные на блоки для более эффективной параллели
+        var rangePartitioner = Partitioner.Create(items);
+
+        Parallel.ForEach(rangePartitioner, () => new List<SearchItem>(), (i, loopState, localList) =>
         {
             var existRank = i.MaxRank.HasValue;
-            var existSubtype = i.Subtypes!= null;
-            if(existRank)
-            {
-                var searchItemMaxR = new SearchItem() { 
-                    Id = i.Id,
-                    slug = i.Slug,
-                    Name = i.Name,
-                    Icon = i.I18n.First().Value.Icon!,
-                    Rank = i.MaxRank!.Value,
-                    Tags = i.Tags!,
-                    SubIcon = i.I18n.First().Value.SubIcon!
-                };
-                searchItems.Add(searchItemMaxR);
+            var existSubtype = i.Subtypes != null;
+            var icon = i.I18n.First().Value.Icon!;
+            var subIcon = i.I18n.First().Value.SubIcon!;
 
-                var searchItemMinR = new SearchItem(){
-                    Id = i.Id,
-                    slug = i.Slug,
-                    Name = i.Name,
-                    Icon = i.I18n.First().Value.Icon!,
-                    Rank = 0,
-                    Tags = i.Tags!,
-                    SubIcon = i.I18n.First().Value.SubIcon!
-                };
-                searchItems.Add(searchItemMinR);
-            }
-            else if(existSubtype)
+            if (existRank)
             {
-                foreach(var subtype in i.Subtypes!)
-                {
-                    var searchItem = new SearchItem()
-                    {
-                        Id = i.Id,
-                        slug = i.Slug,
-                        Name = i.Name,
-                        Icon = i.I18n.First().Value.Icon!,
-                        Subtype = subtype,
-                        Tags = i.Tags!,
-                        SubIcon = i.I18n.First().Value.SubIcon!
-                    };
-                    searchItems.Add(searchItem);
-                }
+                localList.Add(new SearchItem { Id = i.Id, slug = i.Slug, Name = i.Name, Icon = icon, Rank = i.MaxRank!.Value, Tags = i.Tags!, SubIcon = subIcon });
+                localList.Add(new SearchItem { Id = i.Id, slug = i.Slug, Name = i.Name, Icon = icon, Rank = 0, Tags = i.Tags!, SubIcon = subIcon });
+            }
+            else if (existSubtype)
+            {
+                foreach (var subtype in i.Subtypes!)
+                    localList.Add(new SearchItem { Id = i.Id, slug = i.Slug, Name = i.Name, Icon = icon, Subtype = subtype, Tags = i.Tags!, SubIcon = subIcon });
             }
             else
             {
-                var searchItem = new SearchItem()
-                {
-                    Id = i.Id,
-                    slug = i.Slug,
-                    Name = i.Name,
-                    Icon = i.I18n.First().Value.Icon!,
-                    Tags = i.Tags!,
-                    SubIcon = i.I18n.First().Value.SubIcon!
-                };
-                searchItems.Add(searchItem);
+                localList.Add(new SearchItem { Id = i.Id, slug = i.Slug, Name = i.Name, Icon = icon, Tags = i.Tags!, SubIcon = subIcon });
             }
-        }
+
+            return localList;
+        },
+        localList => { foreach (var si in localList) searchItems.Add(si); });
+
         return searchItems;
     }
 
@@ -288,6 +281,12 @@
         await InvokeAsync(StateHasChanged);
     }
 
+    private void RemoveItemFromBuyList(SearchItem item)
+    {
+        shownItems.Remove(item);
+        Notify($"{item.Name} удален",NotifyType.success ,pos: NotifyPosition.TopLeft, timeout: 1000);
+    }
+
     private string SearchText
     {
         get => searchText;
@@ -300,8 +299,21 @@
 
     private void SelectItem(SearchItem item)
     {
+        if(shownItems.Contains(item))
+        {
+            Notify("Этот предмет уже есть", NotifyType.warning);
+            return;
+        }
         searchText = string.Empty;
         filteredItems.Clear();
         shownItems.Add(item); // показать выбранный
+        var marketitem = new MarketItem();
+        marketitem.Id = item.Id;
+        marketitem.Name = item.Name;
+        marketitem.UrlName = item.slug;
+        marketitem.ModRank = item.Rank;
+        marketitem.Subtype = item.Subtype;
+        _ = MarketService.CreateBuyOrder(marketitem);
+        _memory.AddOrUpdateInDictionary(MemoryNameProvider.BuyOrders, item.Id, item);
     }
 }

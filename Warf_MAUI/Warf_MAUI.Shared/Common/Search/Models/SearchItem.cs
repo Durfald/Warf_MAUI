@@ -24,5 +24,13 @@ namespace Warf_MAUI.Shared.Common.Search.Models
         public string? Subtype { get; set; }
 
         public List<string> Tags { get; set; } = new List<string>();
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is SearchItem item) return Id == item.Id;
+            return false;
+        }
+
+        public override int GetHashCode() => Name.GetHashCode();
     }
 }

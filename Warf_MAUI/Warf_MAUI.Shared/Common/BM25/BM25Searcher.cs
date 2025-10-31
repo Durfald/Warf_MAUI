@@ -59,6 +59,8 @@ Trie-дерево — для автодополнения.
 */
 #endregion MB25Info
 
+using System.Collections.Concurrent;
+
 namespace Warf_MAUI.Shared.Common.BM25;
 
 public class BM25Searcher<T> where T : class, IBM25Item
@@ -152,17 +154,76 @@ public class BM25Searcher<T> where T : class, IBM25Item
     /// <param name="items">Коллекция элементов для добавления.</param>
     /// <param name="token">Токен отмены операции. Если задан, добавление может быть прервано.</param>
     /// <returns>Задача, представляющая добавление элементов.</returns>
-    public Task AddItems(IEnumerable<T> items, CancellationToken? token = null)
+    public async Task AddItems(IEnumerable<T> sourceItems, CancellationToken? token = null)
     {
-        foreach (var item in items)
+        var ct = token ?? CancellationToken.None;
+        var parallelOptions = new ParallelOptions
         {
-            if (token.HasValue && token.Value.IsCancellationRequested)
-                return Task.CompletedTask;
-            AddItem(item);
-            OnItemAdded?.Invoke(item);
+            CancellationToken = ct,
+            MaxDegreeOfParallelism = Environment.ProcessorCount
+        };
+
+        // Локальные временные структуры для параллельной обработки
+        var localTermFrequencies = new ConcurrentDictionary<int, Dictionary<string, int>>();
+        var localInvertedIndex = new ConcurrentDictionary<string, ConcurrentBag<int>>();
+        var localDocumentFrequencies = new ConcurrentDictionary<string, int>();
+
+        var tempItems = new ConcurrentBag<(int id, T item, Dictionary<string, int> terms)>();
+
+        // 1️ Распараллеливаем обработку
+        await Parallel.ForEachAsync(sourceItems, parallelOptions, async (item, ct2) =>
+        {
+            // Разбиваем имя на слова
+            var words = item.Name.ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            var termCount = new Dictionary<string, int>();
+            foreach (var word in words)
+            {
+                termCount.TryGetValue(word, out var count);
+                termCount[word] = count + 1;
+
+                // Обновляем локальные словари
+                localInvertedIndex.GetOrAdd(word, _ => new()).Add(items.Count); // itemId временно позже заменим
+                localDocumentFrequencies.AddOrUpdate(word, 1, (_, old) => old + 1);
+            }
+
+            // Добавляем в список для дальнейшего сохранения
+            tempItems.Add((0, item, termCount));
+            await Task.CompletedTask;
+        });
+
+        // 2️ Теперь синхронизируем добавление в основную коллекцию
+        lock (this)
+        {
+            foreach (var (id, item, termCount) in tempItems)
+            {
+                int itemId = items.Count;
+                items.Add(item);
+
+                termFrequencies[itemId] = termCount;
+
+                foreach (var word in termCount.Keys)
+                {
+                    if (!invertedIndex.ContainsKey(word))
+                        invertedIndex[word] = new List<int>();
+
+                    invertedIndex[word].Add(itemId);
+                    autocompleteTrie.Insert(word);
+
+                    if (!documentFrequencies.ContainsKey(word))
+                        documentFrequencies[word] = 0;
+                    documentFrequencies[word]++;
+                }
+
+                OnItemAdded?.Invoke(item);
+            }
+
+            avgDocLength = items.Average(d => d.Name.Split(' ').Length);
         }
-        return Task.CompletedTask;
+
+        OnManyItemsAdded?.Invoke();
     }
+
 
     /// <summary>
     /// Добавляет новый элемент в коллекцию.

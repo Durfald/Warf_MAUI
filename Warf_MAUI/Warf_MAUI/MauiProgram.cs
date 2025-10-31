@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.JSInterop;
 using Warf_MAUI.Services;
 using Warf_MAUI.Shared.Common.Notifications;
 using Warf_MAUI.Shared.Common.WebAPI.Interfaces;
@@ -12,6 +11,7 @@ using Warf_MAUI.Shared.Common.WebAPI.WebClients.MyWarframeApiClient.Service;
 using Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient;
 using Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Services;
 using Warf_MAUI.Shared.Services;
+using Warf_MAUI.Shared.Services.Warf_MAUI.Services;
 
 
 #if WINDOWS
@@ -41,7 +41,7 @@ namespace Warf_MAUI
             {
                 overrides.DoBeFurry = true;
             }));
-
+            builder.Services.AddMemoryCache();
             builder.Services.AddSingleton<IDataStorage, FileDataStorage>();
             builder.Services.AddSingleton<MemoryCacheService>();
 
@@ -73,9 +73,8 @@ namespace Warf_MAUI
             builder.Services.AddSingleton<IAuthService, AuthService>();
             builder.Services.AddSingleton<IOrderService, OrderService>();
             builder.Services.AddSingleton<WarframeMarketApiClient>();
-
             builder.Services.AddSingleton<CombinedApiClient>();
-
+            builder.Services.AddSingleton<WarframeMarketService>();
 #if WINDOWS
             builder.AddBuildForWindows();
 #endif
@@ -85,7 +84,7 @@ namespace Warf_MAUI
             builder.Logging.AddDebug();
 #endif
             var app = builder.Build();
-
+            var marketService = app.Services.GetRequiredService<WarframeMarketService>();
             return app;
         }
     }

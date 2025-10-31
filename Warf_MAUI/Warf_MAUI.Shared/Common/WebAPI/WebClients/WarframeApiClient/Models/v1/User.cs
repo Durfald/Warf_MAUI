@@ -12,6 +12,7 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Models.v1
     {
         [JsonProperty("jwt_token")]
         public string JwtToken { get; set; } = string.Empty;
+
         [JsonProperty("written_reviews")]
         public int WrittenReviews { get; set; }
 

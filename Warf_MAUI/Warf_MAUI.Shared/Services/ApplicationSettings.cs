@@ -125,14 +125,24 @@ namespace Warf_MAUI.Shared.Services
     [XmlType]
     public class GeneralSettings
     {
-        [DisplayName("Минимальный объём продаж за 2 дня")]
+        [DisplayName("Минимальный объём продаж за 2 дня(WIP)")]
         public int TwoDaySellVolume { get; set; } = 60;
 
-        [DisplayName("Минимальная разница цены между покупкой и продажей")]
-        public float MinPriceDifference { get; set; } = 15;
+        [DisplayName("Минимальная разница цены между покупкой и продажей(WIP)")]
+        public int MinPriceDifference { get; set; } = 15;
+
+        [DisplayName("Автоудаление ордеров при остановке приложения(WIP)")]
+        public bool AutoDeleteOrder { get; set; } = true;
+
+        [DisplayName("Автоматически удалять ордер, когда разница между ценой покупки и продажи отсутствует(WIP)")]
+        public bool AutoDeleteOrderWhenSpread { get; set; } = true;
+
+        [DisplayName("Автоматически изменять статус на Warframe Market(WIP)")]
+        public bool AutoEnableOnline { get; set; } = true;
 
         private string _language = string.Empty;
-        [DisplayName("Язык")]
+
+        [DisplayName("Язык(WIP)")]
         public string Language
         {
             get

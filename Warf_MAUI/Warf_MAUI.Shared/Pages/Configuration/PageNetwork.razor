@@ -1,4 +1,7 @@
 ﻿@using System.ComponentModel.DataAnnotations
+@using ApiServerWarframe.Services.Storage.MemoryStorage
+@using Warf_MAUI.Shared.Common.WebAPI.Storage.MemoryStorage
+@using Warf_MAUI.Shared.Common.WebAPI.WebClients
 @using Warf_MAUI.Shared.Components.Elements
 @using Warf_MAUI.Shared.Services
 
@@ -32,6 +35,8 @@
     </div>
 </div>
 
+@inject CombinedApiClient _apiClient;
+@inject MemoryCacheService _memory;
 
 @code {
     [Parameter]
@@ -55,8 +60,10 @@
         var formValid = Validator.TryValidateObject(Settings.LoginForm, context, results, true);
         if (formValid)
         {
-            formStatus = true;
+            // formStatus = true;
             // do network
+            var user = await _apiClient.Warframe.LogIn(email: Settings.LoginForm.Email, Settings.LoginForm.Password);
+            _memory.Set(MemoryNameProvider.User, user);
         }
 
         await InvokeAsync(StateHasChanged);

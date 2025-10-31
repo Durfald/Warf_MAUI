@@ -1,16 +1,55 @@
 ﻿using Microsoft.JSInterop;
+using System.Reflection;
+using System.Runtime.Serialization;
 using Warf_MAUI.Shared.Services;
 
 namespace Warf_MAUI.Shared.Common.Notifications
 {
+  
+
+    public enum NotifyType
+    {
+        primary,
+        success,
+        warning,
+        danger
+    }
+
+    public enum NotifyPosition
+    {
+        [EnumMember(Value = "top-left")]
+        TopLeft,
+
+        [EnumMember(Value = "top-center")]
+        TopCenter,
+
+        [EnumMember(Value = "top-right")]
+        TopRight,
+
+        [EnumMember(Value = "bottom-left")]
+        BottomLeft,
+
+        [EnumMember(Value = "bottom-center")]
+        BottomCenter,
+
+        [EnumMember(Value = "bottom-right")]
+        BottomRight
+    }
+
     public abstract class NotificationControllerBase(ApplicationSettings applicationSettings) : INotificationController
     {
-        public void NofityAll(string message, IJSRuntime runtime)
+        private string GetEnumMemberValue(Enum value)
+        {
+            var type = value.GetType();
+            var member = type.GetMember(value.ToString()).FirstOrDefault();
+            var attr = member?.GetCustomAttribute<EnumMemberAttribute>();
+            return attr?.Value ?? value.ToString();
+        }
+        public void NofityAll(string message, IJSRuntime runtime,NotifyType type = NotifyType.primary,NotifyPosition pos = NotifyPosition.TopRight, int timeout = 500)
         {
             NotifyDiscord(message);
             NotifyTelegram(message);
-            NotifyWindows(message);
-            NotifyApplication(message, runtime);
+            NotifyApplication(runtime, message, type, pos, timeout);
         }
 
         public void NotifyDiscord(string message)
@@ -29,20 +68,11 @@ namespace Warf_MAUI.Shared.Common.Notifications
             Task.Run(() => NotifyTelegramAsync(message));
         }
 
-        public void NotifyWindows(string message)
-        {
-            if (!applicationSettings.Notifications.EnableSendNotificationsThroughWindows)
-                return;
-
-            Task.Run(() => NotifyWindowsAsync(message));
-        }
-
-        public void NotifyApplication(string message, IJSRuntime runtime)
+        public void NotifyApplication(IJSRuntime runtime,string message, NotifyType type = NotifyType.primary,NotifyPosition pos = NotifyPosition.TopRight, int timeout = 500)
         {
             if (!applicationSettings.Notifications.EnableSendNotificationsThroughApplication)
                 return;
-
-            runtime.InvokeVoidAsync("UIkit.notification", message);
+            runtime.InvokeVoidAsync("UIkit.notification",new {message, status = type.ToString(), pos = GetEnumMemberValue(pos), timeout});
         }
 
 
@@ -54,11 +84,6 @@ namespace Warf_MAUI.Shared.Common.Notifications
         }
 
         protected virtual async Task NotifyTelegramAsync(string message)
-        {
-            await Task.Delay(1);
-        }
-
-        protected virtual async Task NotifyWindowsAsync(string message)
         {
             await Task.Delay(1);
         }

@@ -5,54 +5,61 @@
 
 
 <div class="uk-panel-box-primary uk-border-rounded wa-item-card-flex">
-    <div>
-        <h4 class="uk-card-title uk-text-center uk-text-top wa-item-card-title">@Item.Name</h4>
-        <div class="wa-expandable-image-container">
-            <img class="uk-align-center wa-expandable-image" src="@GetImage.GetItemImageUrl(itemShort)" alt="Item" width="64" height="64" />
-        </div>
-        <div class="uk-margin-left">
-            <table class="uk-table uk-table-small">
-                <tbody>
-                    <tr>
-                        <td>Цена покупки:</td>
-                        <td>@Item.BuyPrice</td>
-                    </tr>
-                    <tr>
-                        <td>Цена продажи:</td>
-                        <td>@Item.SellPrice</td>
-                    </tr>
-                    <tr>
-                        <td>Разница:</td>
-                        <td>@Item.Spread</td>
-                    </tr>
-                    @if (Item.Rank != null)
-                    {
-                        <tr>
-                            <td>Ранг:</td>
-                            <td>@Item.Rank</td>
-                        </tr>
-                    }
-                    <tr>
-                        <td>Налог на торговлю:</td>
-                        <td>@Item.TradingTax</td>
-                    </tr>
-                    <tr>
-                        <td>Тренд цены 90 дней:</td>
-                        <td>@Item.DaysTrend</td>
-                    </tr>
-                    <tr>
-                        <td>Тренд цены 2 дней:</td>
-                        <td>@Item.HoursTrend</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+
+    <h4 class="uk-card-title uk-text-center uk-text-top wa-item-card-title">@Item.Name</h4>
+    <div class="wa-expandable-image-container">
+        <img class="uk-align-center wa-expandable-image" src="@GetImage.GetItemImageUrl(itemShort!)" alt="Item" width="64" height="64" />
     </div>
-    <div>
+    <div class="uk-margin-left uk-margin-top-remove">
+        <table class="uk-table uk-table-small">
+            <tbody>
+                @if (Item.Rank != null)
+                {
+                    <tr>
+                        <td>Ранг:</td>
+                        <td>@Item.Rank</td>
+                    </tr>
+                }
+                @if (Item.Subtype != null)
+                {
+                    <tr>
+                        <td>Подтип:</td>
+                        <td>@Item.Subtype</td>
+                    </tr>
+                }
+                <tr>
+                    <td>Цена покупки:</td>
+                    <td>@Item.BuyPrice</td>
+                </tr>
+                <tr>
+                    <td>Цена продажи:</td>
+                    <td>@Item.SellPrice</td>
+                </tr>
+                <tr>
+                    <td>Разница:</td>
+                    <td>@Item.Spread</td>
+                </tr>
+                <tr>
+                    <td>Налог на торговлю:</td>
+                    <td>@Item.TradingTax</td>
+                </tr>
+                <tr>
+                    <td>Тренд цены 90 дней:</td>
+                    <td>@Item.DaysTrend</td>
+                </tr>
+                <tr>
+                    <td>Тренд цены 2 дней:</td>
+                    <td>@Item.HoursTrend</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    @* <div>
         <button class="uk-button uk-button-primary uk-align-center uk-border-rounded-small">
             добавить
         </button>
-    </div>
+    </div> *@
 </div>
 @inject CombinedApiClient _apiClient
 @code {

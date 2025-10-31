@@ -65,23 +65,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="%24placeholder%24.scale-100.png" />
-    <None Remove="%24placeholder%24.scale-200.png" />
-    <None Remove="%24placeholder%24.scale-400.png" />
-    <None Remove="%24placeholder%24.targetsize-16.png" />
-    <None Remove="%24placeholder%24.targetsize-256.png" />
-    <None Remove="%24placeholder%24.targetsize-32.png" />
-    <None Remove="%24placeholder%24.targetsize-48.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="$placeholder$.scale-100.png" />
-    <Content Include="$placeholder$.scale-200.png" />
-    <Content Include="$placeholder$.scale-400.png" />
-    <Content Include="$placeholder$.targetsize-16.png" />
-    <Content Include="$placeholder$.targetsize-256.png" />
-    <Content Include="$placeholder$.targetsize-32.png" />
-    <Content Include="$placeholder$.targetsize-48.png" />
     <Content Include="Platforms\Windows\logo.png">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -106,6 +89,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.0-rc.2.25502.107" />
     <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="$(MauiVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0-rc.2.24473.5" />

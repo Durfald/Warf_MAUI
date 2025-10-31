@@ -53,21 +53,22 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Services
             string? subtype,
             int? amberStars,
             int? cyanStars,
+            string jwt,
             bool visible = true);
 
         /// <summary>
         /// Создаёт новый ордер (через модель запроса). 🔒
         /// </summary>
-        Task<Order> PostOrderAsync(PostOrderRequest body);
+        Task<Order> PostOrderAsync(PostOrderRequest body, string jwt);
 
         /// <summary>
         /// Обновляет существующий ордер. 🔒
         /// </summary>
-        Task<Order> UpdateOrderAsync(string id, PatchOrderRequest body);
+        Task<Order> UpdateOrderAsync(string id, PatchOrderRequest body, string jwt);
 
         /// <summary>
         /// Удаляет ордер. 🔒
         /// </summary>
-        Task<bool> DeleteOrderAsync(string id);
+        Task<bool> DeleteOrderAsync(string id, string jwt);
     }
 }

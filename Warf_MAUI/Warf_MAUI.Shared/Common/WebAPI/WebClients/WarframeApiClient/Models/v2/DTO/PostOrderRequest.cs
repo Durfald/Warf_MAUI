@@ -6,7 +6,7 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Models.v2.
     public class PostOrderRequest
     {
         [JsonProperty("itemId")]
-        public required string ItemId { get; set; } = null!;
+        public required string ItemId { get; set; }
 
         [JsonProperty("type")]
         public required OrderType Type { get; set; }
@@ -18,10 +18,10 @@ namespace Warf_MAUI.Shared.Common.WebAPI.WebClients.WarframeApiClient.Models.v2.
         public required int Quantity { get; set; }
 
         [JsonProperty("visible")]
-        public required bool Visible { get; set; } = true;
+        public bool Visible { get; set; } = true;
 
         [JsonProperty("perTrade", NullValueHandling = NullValueHandling.Ignore)]
-        public int PerTrade { get; set; }
+        public int? PerTrade { get; set; } = null;
 
         [JsonProperty("rank", NullValueHandling = NullValueHandling.Ignore)]
         public int? Rank { get; set; }

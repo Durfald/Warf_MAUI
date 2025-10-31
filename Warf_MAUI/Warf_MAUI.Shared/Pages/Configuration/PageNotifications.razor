@@ -61,15 +61,6 @@
         base.OnInitialized();
         // Здесь можно добавить логику инициализации, если необходимо
     }
-    private void EnableSendNotificationsThroughWindows(ChangeEventArgs args)
-    {
-        if (bool.TryParse(args.Value?.ToString(), out bool result))
-            Settings.EnableSendNotificationsThroughWindows = result;
-        else Settings.EnableSendNotificationsThroughWindows = false;
-
-        if (result)
-            notificationController.NotifyWindows("Windows notifications enabled!");
-    }
 
     private void EnableSendNotificationsThroughApplication(ChangeEventArgs args)
     {
@@ -78,7 +69,7 @@
         else Settings.EnableSendNotificationsThroughApplication = false;
 
         if (result)
-            notificationController.NotifyApplication("Application notifications enabled!", jsRuntime);
+            notificationController.NotifyApplication(jsRuntime,"Application notifications enabled!", NotifyType.success, timeout: 2000);
     }
 }
 
